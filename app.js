@@ -25,11 +25,10 @@ function brand() {
 }
 
 function render() {
-  bindRoute(document.body.dataset.route || location.hash.slice(1));
+  bindRoute(document.body.dataset.route || location.hash.slice(1) || "home");
 }
 
 function bindRoute(route) {
-  if (!route) return renderStyleGuide();
   if (["login", "register", "reset"].includes(route)) return renderAuth(route);
   if (route === "dashboard" && currentUser) return renderDashboard();
   if (route === "dashboard") return navigate("login");
@@ -41,59 +40,6 @@ function navigate(route) {
   document.body.dataset.route = route;
   bindRoute(route);
   window.scrollTo(0, 0);
-}
-
-function renderStyleGuide() {
-  app.innerHTML = `
-    <main class="style-guide">
-      <section class="guide-card palette-card">
-        <h2>COLOR PALETTE</h2>
-        <div class="palette-divider"></div>
-        <div class="palette-grid">
-          <div class="palette-item"><div class="swatch swatch-white"></div><span>White / Background</span></div>
-          <div class="palette-item"><div class="swatch swatch-black"></div><span>Black / Text</span></div>
-          <div class="palette-item"><div class="swatch swatch-grey"></div><span>Dark Grey / Body</span></div>
-          <div class="palette-item"><div class="swatch swatch-blue"></div><span>Blue / Primary</span></div>
-          <div class="palette-item"><div class="swatch swatch-light-grey"></div><span>Light Grey / Border</span></div>
-          <div class="palette-item"><div class="swatch swatch-light-blue"></div><span>Light Blue / BG</span></div>
-        </div>
-      </section>
-
-      <section class="guide-card typography-card">
-        <h2>TYPOGRAPHY</h2>
-        <div class="type-section">
-          <h3>Headings</h3>
-          <p>SYSTEM UI • 600–700</p>
-        </div>
-        <div class="type-section">
-          <h3>Body Text</h3>
-          <p>14–15PX • LINE HEIGHT: 1.6</p>
-        </div>
-        <div class="type-section accent-section">
-          <h3>Accent</h3>
-          <p>LINKS • BUTTONS • HIGHLIGHTS</p>
-        </div>
-        <div class="type-samples">
-          <div>Headings — Black</div>
-          <div>Body — Dark Grey</div>
-          <div>Interactive — Blue</div>
-        </div>
-      </section>
-
-      <section class="guide-card components-card">
-        <h2>COMPONENTS</h2>
-        <div class="component-list">
-          <p><strong>Button Primary</strong> — Blue bg / White text</p>
-          <p><strong>Button Secondary</strong> — White bg / Dark Grey border</p>
-          <p><strong>Card</strong> — White bg / Light Grey border</p>
-          <p><strong>Input</strong> — White bg / Light Grey border</p>
-          <p><strong>Link</strong> — Blue text / Underlined</p>
-          <p><strong>Navigation</strong> — Light Blue bg</p>
-          <p><strong>Data Table</strong> — Header Light Blue</p>
-          <p><strong>Dialog</strong> — White bg / Black border</p>
-        </div>
-      </section>
-    </main>`;
 }
 
 function renderLanding() {
@@ -346,6 +292,6 @@ document.addEventListener("submit", event => {
   }
 });
 
-window.addEventListener("hashchange", () => bindRoute(location.hash.slice(1)));
+window.addEventListener("hashchange", () => bindRoute(location.hash.slice(1) || "home"));
 initialExperience();
 render();
