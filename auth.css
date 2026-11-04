@@ -50,7 +50,7 @@ body {
   height: 47px;
   margin-bottom: 17px;
   padding: 0 14px;
-  border: 1px solid #cfcfcf;
+  border: 2px solid #1e1e1e;
   border-radius: 3px;
   outline: none;
   background: #fff;
@@ -59,14 +59,14 @@ body {
 }
 
 .auth-card input:focus {
-  border-color: #3269d5;
-  box-shadow: 0 0 0 2px rgba(50, 105, 213, 0.12);
+  box-shadow: inset 0 0 0 1px #111;
 }
 
 .primary-button,
 .cancel-button {
   width: 100%;
   height: 47px;
+  border: 2px solid #1e1e1e;
   border-radius: 3px;
   background: #fff;
   color: #111;
@@ -75,31 +75,23 @@ body {
   cursor: pointer;
 }
 
-.action-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .primary-button {
   margin-top: 2px;
-  border: 0;
-  background: #3269d5;
-  color: #fff;
 }
 
 .primary-button:hover {
-  background: #245bc0;
+  color: #fff;
+  background: #111;
 }
 
 .cancel-button {
   margin-top: 10px;
-  border: 2px solid #111;
+  border-style: dashed;
   font-weight: 600;
 }
 
 .auth-link {
-  color: #3269d5;
+  color: #111;
   font-size: 13px;
 }
 
