@@ -38,7 +38,7 @@
               <span>Sign in</span>
               <span class="button-arrow" aria-hidden="true">→</span>
             </button>
-            <p class="card-note">Sign in after your account has been approved.</p>
+            <p class="card-note">Register for an account, then sign in with the password you created.</p>
             <a class="text-link" id="forgot-password-link" href="#password-reset">Forgot password?</a>
           </form>
         </section>
@@ -76,7 +76,7 @@
               <span>Create account</span>
               <span class="button-arrow" aria-hidden="true">→</span>
             </button>
-            <p class="card-note">New accounts start pending approval.</p>
+            <p class="card-note">New accounts are ready to use after registration.</p>
           </form>
         </section>
 
@@ -125,14 +125,111 @@
         </section>
       </div>
 
-      <section class="auth-card session-card" id="session-panel" aria-live="polite" hidden>
-        <div class="session-copy">
-          <span class="section-label">SIGNED IN</span>
-          <h1 id="session-title">Welcome</h1>
-          <p id="session-email"></p>
-        </div>
-        <button class="secondary-button logout-button" id="logout-button" type="button">Log out</button>
-        <p class="form-message" id="session-message" role="status" aria-live="polite" hidden></p>
+      <section class="app-panel" id="app-panel" hidden>
+        <header class="app-header">
+          <a class="app-name" href="#" data-app-view="dashboard">HOPE Community</a>
+          <nav class="app-nav" aria-label="Main navigation">
+            <button class="nav-button active" type="button" data-app-view="dashboard">Dashboard</button>
+            <button class="nav-button" id="users-nav-button" type="button" data-app-view="users" hidden>Users</button>
+            <button class="nav-button" type="button" data-app-view="settings">Settings</button>
+            <button class="nav-button nav-logout" id="logout-button" type="button">Logout</button>
+          </nav>
+        </header>
+        <p class="form-message app-message" id="session-message" role="status" aria-live="polite" hidden></p>
+
+        <section class="app-view" id="dashboard-view" aria-labelledby="dashboard-title">
+          <div class="page-heading">
+            <span class="section-label">COMMUNITY PORTAL</span>
+            <h1 id="dashboard-title">Welcome, <span id="session-title">member</span></h1>
+            <p id="session-email"></p>
+          </div>
+          <div class="dashboard-welcome">
+            <h2>System overview</h2>
+            <p>System overview and quick actions appear here.</p>
+          </div>
+          <div class="quick-actions" aria-label="Quick actions">
+            <div class="quick-action">Dashboard</div>
+            <div class="quick-action">Reports</div>
+          </div>
+          <button class="submit-button user-management-link" id="open-users-button" type="button" data-app-view="users" hidden>
+            Go to User Management
+          </button>
+        </section>
+
+        <section class="app-view" id="users-view" aria-labelledby="users-title" hidden>
+          <div class="page-heading management-heading">
+            <div>
+              <span class="section-label">ADMINISTRATION</span>
+              <h1 id="users-title">User Management</h1>
+            </div>
+            <button class="submit-button add-user-button" id="add-user-button" type="button">+ Add User</button>
+          </div>
+          <div class="user-list-heading">
+            <h2>User List</h2>
+            <span id="user-count" aria-live="polite"></span>
+          </div>
+          <label class="visually-hidden" for="user-search">Search users</label>
+          <input class="user-search" id="user-search" type="search" placeholder="Search users...">
+          <p class="form-message" id="users-message" role="status" aria-live="polite" hidden></p>
+          <div class="table-scroll">
+            <table class="user-table">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Role</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-table-body"></tbody>
+            </table>
+            <p class="empty-users" id="empty-users" hidden>No users match your search.</p>
+          </div>
+          <form class="user-editor auth-card" id="user-form" hidden>
+            <div class="card-heading">
+              <span class="section-label" id="user-form-label">NEW ACCOUNT</span>
+              <h2 id="user-form-title">Add User</h2>
+            </div>
+            <div class="field">
+              <label for="user-full-name">Full name</label>
+              <input id="user-full-name" name="fullName" type="text" autocomplete="name" required maxlength="100">
+            </div>
+            <div class="field">
+              <label for="user-email">Email address</label>
+              <input id="user-email" name="email" type="email" autocomplete="email" required maxlength="254">
+            </div>
+            <div class="field">
+              <label for="user-role">Role</label>
+              <select id="user-role" name="role" required>
+                <option value="User">User</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
+            <div class="field" id="user-password-field">
+              <label for="user-password">Temporary password</label>
+              <input id="user-password" name="password" type="password" autocomplete="new-password" required minlength="8" maxlength="128">
+            </div>
+            <p class="card-note" id="user-form-note">The new account will be active with the User role.</p>
+            <p class="form-message" id="user-form-message" role="status" aria-live="polite" hidden></p>
+            <div class="editor-actions">
+              <button class="submit-button" id="save-user-button" type="submit"><span>Add User</span></button>
+              <button class="secondary-button" id="cancel-user-button" type="button">Cancel</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="app-view" id="settings-view" aria-labelledby="settings-title" hidden>
+          <div class="page-heading">
+            <span class="section-label">ACCOUNT</span>
+            <h1 id="settings-title">Settings</h1>
+          </div>
+          <div class="dashboard-welcome">
+            <h2 id="settings-name"></h2>
+            <p id="settings-email"></p>
+            <p>Role: <strong id="settings-role"></strong></p>
+          </div>
+        </section>
       </section>
 
       <footer class="page-footer">
