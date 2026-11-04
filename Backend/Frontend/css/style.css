@@ -78,9 +78,14 @@ input {
 .auth-grid {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: stretch;
-  gap: 20px;
+  gap: 24px;
+}
+
+.auth-grid[hidden],
+.form-message[hidden] {
+  display: none;
 }
 
 .auth-card {
@@ -94,6 +99,42 @@ input {
 
 .register-card {
   border-top: 3px solid var(--blue);
+}
+
+.session-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: auto;
+  padding: 32px;
+}
+
+.session-card[hidden] {
+  display: none;
+}
+
+.session-copy h1 {
+  margin: 8px 0 5px;
+  font-family: Manrope, Arial, sans-serif;
+  font-size: 25px;
+  letter-spacing: -0.04em;
+}
+
+.session-copy p {
+  margin: 0;
+  color: var(--caption);
+  font-size: 13px;
+}
+
+.logout-button {
+  width: auto;
+  min-width: 130px;
+  padding: 0 20px;
+  border-style: solid;
+  border-color: var(--line);
+  color: var(--ink);
+  cursor: pointer;
 }
 
 .section-label {
@@ -300,6 +341,12 @@ input {
   .auth-grid {
     grid-template-columns: 1fr;
     gap: 15px;
+  }
+
+  .session-card {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 25px clamp(22px, 6vw, 40px);
   }
 
   .auth-card {

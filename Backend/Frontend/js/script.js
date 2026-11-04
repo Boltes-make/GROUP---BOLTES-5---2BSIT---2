@@ -1,6 +1,14 @@
-const form = document.querySelector('#register-form');
-const formMessage = document.querySelector('#form-message');
-const submitButton = document.querySelector('#submit-button');
+const authGrid = document.querySelector('#auth-grid');
+const sessionPanel = document.querySelector('#session-panel');
+const loginForm = document.querySelector('#login-form');
+const registerForm = document.querySelector('#register-form');
+const loginMessage = document.querySelector('#login-message');
+const registerMessage = document.querySelector('#form-message');
+const sessionMessage = document.querySelector('#session-message');
+const loginButton = document.querySelector('#login-button');
+const registerButton = document.querySelector('#submit-button');
+const logoutButton = document.querySelector('#logout-button');
+const storageKey = 'hope-community-session';
 const isLocalPreview = window.location.protocol === 'file:' ||
   ['localhost', '127.0.0.1'].includes(window.location.hostname);
 const apiBaseUrl = isLocalPreview ? 'http://localhost:3000' : window.location.origin;
@@ -15,83 +23,237 @@ document.querySelectorAll('[data-password-toggle]').forEach((button) => {
     button.setAttribute('aria-pressed', String(shouldShow));
     button.setAttribute(
       'aria-label',
-      `${shouldShow ? 'Hide' : 'Show'} ${input.id === 'password' ? 'password' : 'confirmation password'}`
+      `${shouldShow ? 'Hide' : 'Show'} ${input.id.includes('confirm') ? 'confirmation password' : 'password'}`
     );
   });
 });
 
-form.addEventListener('submit', async (event) => {
+loginForm.addEventListener('submit', async (event) => {
   event.preventDefault();
-  hideMessage();
+  clearMessage(loginMessage);
+  setButtonBusy(loginButton, true, 'Signing in...');
 
-  const formData = new FormData(form);
-  const fullName = formData.get('fullName').trim();
-  const email = formData.get('email').trim();
+  try {
+    const formData = new FormData(loginForm);
+    const result = await apiRequest('/api/auth/login', {
+      method: 'POST',
+      body: {
+        email: formData.get('email').trim(),
+        password: formData.get('password')
+      }
+    });
+
+    saveSession(result.session);
+    showSignedIn(result.user);
+    loginForm.reset();
+  } catch (error) {
+    showMessage(loginMessage, 'error', error.message);
+  } finally {
+    setButtonBusy(loginButton, false, 'Sign in');
+  }
+});
+
+registerForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  clearMessage(registerMessage);
+
+  const formData = new FormData(registerForm);
   const password = formData.get('password');
   const confirmPassword = formData.get('confirmPassword');
 
   if (password !== confirmPassword) {
-    showMessage('error', 'Your passwords do not match.');
+    showMessage(registerMessage, 'error', 'Your passwords do not match.');
     document.querySelector('#confirm-password').focus();
     return;
   }
 
-  submitButton.disabled = true;
-  submitButton.querySelector('span').textContent = 'Creating account...';
+  setButtonBusy(registerButton, true, 'Creating account...');
 
   try {
-    const response = await fetch(`${apiBaseUrl}/api/register`, {
+    const result = await apiRequest('/api/register', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fullName, email, password })
-    });
-    const contentType = response.headers.get('content-type') || '';
-    const responseBody = await response.text();
-    let result = null;
-
-    if (contentType.includes('application/json') && responseBody) {
-      try {
-        result = JSON.parse(responseBody);
-      } catch {
-        throw new Error(`The server returned an invalid response (HTTP ${response.status}).`);
+      body: {
+        fullName: formData.get('fullName').trim(),
+        email: formData.get('email').trim(),
+        password
       }
-    }
-
-    if (!response.ok) {
-      const message = result?.message ||
-        `Registration failed (HTTP ${response.status}). Check the backend terminal for details.`;
-      throw new Error(message);
-    }
-
-    if (!result) {
-      throw new Error(`The server returned an unexpected response (HTTP ${response.status}).`);
-    }
-
-    form.reset();
-    document.querySelectorAll('[data-password-toggle]').forEach((button) => {
-      button.textContent = 'Show';
-      button.setAttribute('aria-pressed', 'false');
     });
-    showMessage(
-      'success',
-      result.message || 'Your account request was received. It is now pending approval.'
-    );
+
+    registerForm.reset();
+    resetPasswordToggles(registerForm);
+    showMessage(registerMessage, 'success', result.message);
   } catch (error) {
-    showMessage('error', error.message || 'Unable to reach the server. Please try again.');
+    showMessage(registerMessage, 'error', error.message);
   } finally {
-    submitButton.disabled = false;
-    submitButton.querySelector('span').textContent = 'Create account';
+    setButtonBusy(registerButton, false, 'Create account');
   }
 });
 
-function showMessage(type, message) {
-  formMessage.textContent = message;
-  formMessage.className = `form-message ${type}`;
-  formMessage.hidden = false;
+logoutButton.addEventListener('click', async () => {
+  const session = readSession();
+  logoutButton.disabled = true;
+  logoutButton.textContent = 'Logging out...';
+  clearMessage(sessionMessage);
+
+  try {
+    if (session?.accessToken && session?.refreshToken) {
+      await apiRequest('/api/auth/logout', {
+        method: 'POST',
+        accessToken: session.accessToken,
+        body: { refreshToken: session.refreshToken }
+      });
+    }
+    showAuthForms();
+  } catch (error) {
+    showAuthForms();
+    showMessage(loginMessage, 'error', error.message);
+  } finally {
+    clearSession();
+    logoutButton.disabled = false;
+    logoutButton.textContent = 'Log out';
+  }
+});
+
+async function restoreSession() {
+  const session = readSession();
+  if (!session?.accessToken) {
+    clearSession();
+    return;
+  }
+
+  try {
+    const result = await apiRequest('/api/auth/session', {
+      accessToken: session.accessToken
+    });
+    showSignedIn(result.user);
+  } catch (error) {
+    if (error.status !== 401 || !session.refreshToken) {
+      clearSession();
+      if (error.status !== 401 && error.status !== 403) {
+        saveSession(session);
+      }
+      showAuthForms();
+      showMessage(loginMessage, 'error', error.message);
+      return;
+    }
+
+    try {
+      const refreshed = await apiRequest('/api/auth/refresh', {
+        method: 'POST',
+        body: { refreshToken: session.refreshToken }
+      });
+      saveSession(refreshed.session);
+      showSignedIn(refreshed.user);
+    } catch (refreshError) {
+      if (refreshError.status === 401 || refreshError.status === 403) {
+        clearSession();
+      }
+      showAuthForms();
+      showMessage(loginMessage, 'error', refreshError.message);
+    }
+  }
 }
 
-function hideMessage() {
-  formMessage.hidden = true;
-  formMessage.textContent = '';
-  formMessage.className = 'form-message';
+async function apiRequest(path, { method = 'GET', body, accessToken } = {}) {
+  const headers = { Accept: 'application/json' };
+  if (body !== undefined) {
+    headers['Content-Type'] = 'application/json';
+  }
+  if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  let response;
+  try {
+    response = await fetch(`${apiBaseUrl}${path}`, {
+      method,
+      headers,
+      body: body === undefined ? undefined : JSON.stringify(body)
+    });
+  } catch {
+    throw new Error('Cannot reach the server. Make sure the backend is running, then try again.');
+  }
+
+  const contentType = response.headers.get('content-type') || '';
+  const responseText = await response.text();
+  let result = null;
+
+  if (contentType.includes('application/json') && responseText) {
+    try {
+      result = JSON.parse(responseText);
+    } catch {
+      throw new Error(`The server returned an invalid response (HTTP ${response.status}).`);
+    }
+  }
+
+  if (!response.ok) {
+    const error = new Error(result?.message || `Request failed (HTTP ${response.status}).`);
+    error.status = response.status;
+    throw error;
+  }
+  if (!result) {
+    throw new Error(`The server returned an unexpected response (HTTP ${response.status}).`);
+  }
+
+  return result;
 }
+
+function showSignedIn(user) {
+  authGrid.hidden = true;
+  sessionPanel.hidden = false;
+  document.querySelector('#session-title').textContent = `Welcome, ${user.fullName || user.email || 'member'}`;
+  document.querySelector('#session-email').textContent = user.email || '';
+  clearMessage(sessionMessage);
+}
+
+function showAuthForms() {
+  sessionPanel.hidden = true;
+  authGrid.hidden = false;
+}
+
+function saveSession(session) {
+  sessionStorage.setItem(storageKey, JSON.stringify(session));
+}
+
+function readSession() {
+  try {
+    const session = JSON.parse(sessionStorage.getItem(storageKey) || 'null');
+    return session && typeof session.accessToken === 'string' ? session : null;
+  } catch {
+    return null;
+  }
+}
+
+function clearSession() {
+  sessionStorage.removeItem(storageKey);
+}
+
+function resetPasswordToggles(form) {
+  form.querySelectorAll('[data-password-toggle]').forEach((button) => {
+    button.textContent = 'Show';
+    button.setAttribute('aria-pressed', 'false');
+    button.setAttribute(
+      'aria-label',
+      button.dataset.passwordToggle.includes('confirm') ? 'Show confirmation password' : 'Show password'
+    );
+  });
+}
+
+function setButtonBusy(button, busy, label) {
+  button.disabled = busy;
+  button.querySelector('span').textContent = label;
+}
+
+function showMessage(element, type, message) {
+  element.textContent = message;
+  element.className = `form-message ${type}`;
+  element.hidden = false;
+}
+
+function clearMessage(element) {
+  element.textContent = '';
+  element.className = 'form-message';
+  element.hidden = true;
+}
+
+restoreSession();
