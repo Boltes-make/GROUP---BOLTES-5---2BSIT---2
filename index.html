@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BOLTES 5 role management portal">
+  <title>BOLTES 5</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,600;1,6..72,500&display=display" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="grain"></div>
+
+  <section id="authView" class="auth-view">
+    <aside class="auth-panel">
+      <button class="brand" data-action="home" aria-label="BOLTES 5 home">
+        <span class="brand-mark">B5</span>
+        <span>BOLTES 5</span>
+      </button>
+      <div class="auth-art">
+        <p class="eyebrow">SYSTEM PORTAL / 2026</p>
+        <h1>Access,<br><em>in order.</em></h1>
+        <p>One workspace for people, permissions, and accountable access.</p>
+      </div>
+      <div class="auth-index"><span>01</span><span>SECURE WORKSPACE</span></div>
+    </aside>
+
+    <main class="auth-content">
+      <div class="auth-topbar">
+        <span id="authStep">01 / SIGN IN</span>
+        <button class="icon-button theme-toggle" data-action="theme" aria-label="Toggle theme">◐</button>
+      </div>
+
+      <div class="form-wrap">
+        <form id="loginForm" class="auth-form active" data-form="login">
+          <p class="eyebrow">WELCOME BACK</p>
+          <h2>Sign in to BOLTES</h2>
+          <p class="form-copy">Enter your credentials to open your workspace.</p>
+          <label>Email address<input type="email" name="email" value="super@boltes.com" required autocomplete="email"></label>
+          <label>Password<div class="password-wrap"><input type="password" name="password" value="admin123" required autocomplete="current-password"><button type="button" data-action="reveal" aria-label="Show password">SHOW</button></div></label>
+          <div class="form-row"><label class="check"><input type="checkbox" name="remember"> <span>Remember me</span></label><button type="button" class="text-button" data-view="reset">Forgot password?</button></div>
+          <button class="primary-button" type="submit">Enter workspace <span>→</span></button>
+          <p class="switch-copy">New to BOLTES? <button type="button" class="text-button" data-view="register">Create account</button></p>
+        </form>
+
+        <form id="registerForm" class="auth-form" data-form="register">
+          <p class="eyebrow">NEW ACCESS</p><h2>Create your account</h2><p class="form-copy">Request access as a standard workspace user.</p>
+          <div class="field-grid"><label>Full name<input name="name" required placeholder="Alex Morgan"></label><label>Email address<input type="email" name="email" required placeholder="alex@example.com"></label></div>
+          <label>Password<div class="password-wrap"><input type="password" name="password" required minlength="6" autocomplete="new-password"><button type="button" data-action="reveal" aria-label="Show password">SHOW</button></div></label>
+          <label class="check consent"><input type="checkbox" required><span>I agree to the workspace access policy.</span></label>
+          <button class="primary-button" type="submit">Create account <span>→</span></button>
+          <p class="switch-copy">Already registered? <button type="button" class="text-button" data-view="login">Sign in</button></p>
+        </form>
+
+        <form id="resetForm" class="auth-form" data-form="reset">
+          <p class="eyebrow">ACCOUNT RECOVERY</p><h2>Reset your password</h2><p class="form-copy">Enter your email. In this demo, reset access is confirmed immediately.</p>
+          <label>Email address<input type="email" name="email" required placeholder="you@example.com"></label>
+          <label>New password<div class="password-wrap"><input type="password" name="password" required minlength="6" autocomplete="new-password"><button type="button" data-action="reveal" aria-label="Show password">SHOW</button></div></label>
+          <button class="primary-button" type="submit">Set new password <span>→</span></button>
+          <p class="switch-copy"><button type="button" class="text-button" data-view="login">← Back to sign in</button></p>
+        </form>
+      </div>
+    </main>
+  </section>
+
+  <section id="appView" class="app-view hidden">
+    <aside class="sidebar">
+      <button class="brand sidebar-brand" data-action="dashboard"><span class="brand-mark">B5</span><span>BOLTES 5</span></button>
+      <nav aria-label="Main navigation">
+        <button class="nav-item active" data-section="dashboard"><span>⌂</span> Overview</button>
+        <button class="nav-item" data-section="users"><span>♙</span> People</button>
+        <button class="nav-item" data-section="activity"><span>⌁</span> Activity</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="nav-item" data-action="settings"><span>⚙</span> Settings</button>
+        <button class="nav-item" data-action="logout"><span>↗</span> Sign out</button>
+        <div class="mini-profile"><div class="avatar" id="sideAvatar">SA</div><div><strong id="sideName">Super Admin</strong><span id="sideRole">Superadmin</span></div></div>
+      </div>
+    </aside>
+
+    <main class="dashboard">
+      <header class="dash-header">
+        <div><p class="eyebrow" id="dateLabel">WORKSPACE</p><h1 id="pageTitle">Overview</h1></div>
+        <div class="header-actions"><button class="icon-button" data-action="theme" aria-label="Toggle theme">◐</button><button class="profile-button"><span class="avatar" id="headAvatar">SA</span><span id="headName">Super Admin</span><span>⌄</span></button></div>
+      </header>
+
+      <section class="screen active" data-screen="dashboard">
+        <div class="welcome-strip"><div><p class="eyebrow">TODAY'S OPERATIONS</p><h2 id="welcomeText">Good morning, Super Admin.</h2></div><div class="status-pill"><span></span> All systems normal</div></div>
+        <div class="metric-grid">
+          <article class="metric"><div class="metric-label"><span>Total people</span><span>↗</span></div><strong id="totalUsers">8</strong><small><b>+2</b> this month</small></article>
+          <article class="metric"><div class="metric-label"><span>Administrators</span><span>↗</span></div><strong id="adminCount">2</strong><small>Active permissions</small></article>
+          <article class="metric"><div class="metric-label"><span>Access events</span><span>↗</span></div><strong>24</strong><small>Last 24 hours</small></article>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel people-panel"><div class="panel-heading"><div><p class="eyebrow">DIRECTORY</p><h3>Team access</h3></div><button class="secondary-button" data-section="users">View all</button></div><div id="recentUsers" class="user-list"></div></article>
+          <article class="panel access-panel"><div class="panel-heading"><div><p class="eyebrow">YOUR CAPABILITIES</p><h3>Access level</h3></div></div><div id="roleCard"></div></article>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="users">
+        <div class="screen-toolbar"><div><p class="eyebrow">ACCESS CONTROL</p><h2>People</h2></div><div class="toolbar-actions"><label class="search"><span>⌕</span><input id="userSearch" placeholder="Search people"></label><button id="inviteButton" class="primary-button compact" data-action="register">＋ Add person</button></div></div>
+        <div class="table-panel"><table><thead><tr><th>Person</th><th>Role</th><th>Status</th><th>Last active</th><th>Actions</th></tr></thead><tbody id="userTable"></tbody></table></div>
+      </section>
+
+      <section class="screen" data-screen="activity">
+        <div class="screen-toolbar"><div><p class="eyebrow">AUDIT LOG</p><h2>Activity</h2></div></div>
+        <div class="activity-list" id="activityList"></div>
+      </section>
+    </main>
+  </section>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card"><button class="modal-close" data-action="close-modal" aria-label="Close">×</button><p class="eyebrow">USER MANAGEMENT</p><h2 id="modalTitle">Edit access</h2><div id="modalBody"></div></div>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
