@@ -22,7 +22,7 @@
 }
 
 body {
-  min-width: 760px;
+  min-width: 320px;
   min-height: 100vh;
   margin: 0;
   background:
@@ -541,6 +541,16 @@ input {
   color: var(--error);
 }
 
+.user-status.pending {
+  background: #fff7e6;
+  color: #8a5a00;
+}
+
+.user-status.active {
+  background: var(--blue-soft);
+  color: #244b9e;
+}
+
 .row-actions {
   display: flex;
   flex-wrap: wrap;
@@ -633,4 +643,105 @@ input {
   padding: 17px 2px 20px;
   color: #888a94;
   font-size: 10px;
+}
+
+@media (max-width: 960px) {
+  .page-shell {
+    width: min(760px, calc(100% - 32px));
+  }
+
+  .auth-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .brand {
+    margin: 20px 0 16px;
+  }
+}
+
+@media (max-width: 760px) {
+  .page-shell {
+    width: min(560px, calc(100% - 32px));
+  }
+
+  .auth-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .auth-card {
+    padding: 25px clamp(22px, 6vw, 40px);
+  }
+
+  .card-heading {
+    min-height: 65px;
+  }
+
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .app-nav {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .nav-button {
+    padding-inline: 9px;
+  }
+
+  .app-view {
+    padding: 20px 16px;
+  }
+
+  .management-heading {
+    align-items: flex-start;
+  }
+
+  .add-user-button {
+    min-width: max-content;
+  }
+
+  .user-table {
+    min-width: 690px;
+  }
+}
+
+@media (max-width: 420px) {
+  .page-shell {
+    width: calc(100% - 22px);
+  }
+
+  .auth-card {
+    padding: 22px 18px;
+  }
+
+  .page-footer {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .quick-actions {
+    gap: 9px;
+  }
+
+  .quick-action {
+    min-height: 66px;
+    font-size: 13px;
+  }
+
+  .management-heading {
+    flex-direction: column;
+  }
+
+  .add-user-button {
+    width: 100%;
+  }
+
+  .editor-actions {
+    flex-direction: column;
+  }
 }

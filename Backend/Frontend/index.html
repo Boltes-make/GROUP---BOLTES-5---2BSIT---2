@@ -38,7 +38,7 @@
               <span>Sign in</span>
               <span class="button-arrow" aria-hidden="true">→</span>
             </button>
-            <p class="card-note">Register for an account, then sign in with the password you created.</p>
+            <p class="card-note">Register first. A Superadmin must approve your account before you can sign in.</p>
             <a class="text-link" id="forgot-password-link" href="#password-reset">Forgot password?</a>
           </form>
         </section>
@@ -76,7 +76,7 @@
               <span>Create account</span>
               <span class="button-arrow" aria-hidden="true">→</span>
             </button>
-            <p class="card-note">New accounts are ready to use after registration.</p>
+            <p class="card-note">Your account will be available after Superadmin approval.</p>
           </form>
         </section>
 
@@ -200,11 +200,13 @@
               <input id="user-email" name="email" type="email" autocomplete="email" required maxlength="254">
             </div>
             <div class="field">
-              <label for="user-role">Role</label>
-              <select id="user-role" name="role" required>
-                <option value="User">User</option>
-                <option value="Admin">Admin</option>
-              </select>
+              <div id="user-role-field" hidden>
+                <label for="user-role">Role</label>
+                <select id="user-role" name="role">
+                  <option value="User">User</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </div>
             </div>
             <div class="field" id="user-password-field">
               <label for="user-password">Temporary password</label>
