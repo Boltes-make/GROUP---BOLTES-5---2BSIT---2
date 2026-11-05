@@ -1,0 +1,84 @@
+Sprint 1 Test Plan
+1. Overview & Scope
+The goal of Sprint 1 is to validate core authentication, user management, role-based access control (RBAC), and basic navigation.
+
+Scope Items
+Main Page
+Login
+Reset / Set Password
+Register User
+Main Landing Page (post-login)
+
+User Roles
+Superadmin: Full administrative control. Can block admins and users; can assign/set rights.
+Admin: Moderate administrative control. Can block regular users; can assign/set user rights.
+User: Standard user access without administrative or management rights.
+
+Test Cases & Acceptance Criteria
+Main Page
+TC-01: Main Page Accessibility
+Given an unauthenticated visitor accesses the application URL,
+When the page loads,
+Then the main public landing page displays correctly with options to Log In or Register.
+
+Login
+TC-02: Successful Login
+Given a registered user enters valid credentials (email/username and password),
+When they submit the login form,
+Then they are authenticated and redirected to the main post-login landing page.
+
+TC-03:Invalid Login
+Given a user inputs invalid or incorrect credentials,
+When they submit the login form,
+Then an appropriate error message is displayed and access is denied.
+
+TC-04:Blocked User Login Attempt
+Given a user account has been blocked by an Admin or Superadmin,
+When the user attempts to log in with valid credentials,
+Then the system prevents access and displays an "Account Blocked" error message.
+
+Reset / Set Password
+TC-05: Request Password Reset Link
+Given a user requests a password reset on the login page,
+When they provide a registered email address,
+Then a secure password reset link/token is sent to their email.
+
+Set New Password
+TC-06: Set New Password
+Given a user clicks a valid password reset link,
+When they enter a new password meeting system complexity guidelines and submit,
+Then the password updates successfully, and they can log in using the new password.
+
+Register User
+TC-07: Successful User Registration
+Given a new user fills out the registration form with valid required details,
+When they submit the form,
+Then the account is created, assignable default role permissions are set, and a confirmation email/message is generated.
+
+TC-08: Registration Validation
+Given a user submits the registration form with existing email addresses or missing mandatory fields,
+When validation executes,
+Then inline field errors prevent form submission.
+
+Main Landing Page After Successful Login
+TC-09: Post-Login Landing Page Navigation
+Given an authenticated user successfully logs in,
+When redirected to the post-login landing page,
+Then the page loads correctly displaying user-specific options, user profile details, and navigation controls.
+
+Role-Based Access Control (RBAC) & Rights Management
+TC-10: Superadmin Permissions
+Given a Superadmin user is logged in,
+When managing accounts,
+Then they can block/unblock both Admins and standard Users, as well as set/modify permissions for all roles.
+
+TC-11: Admin Permissions & Constraints
+Given an Admin user is logged in,
+When managing accounts,
+Then they can block/unblock standard Users and assign user rights, but CANNOT block or modify rights for Superadmin accounts.
+
+TC-12: Standard User Access Restrictions
+Given a standard User is logged in,
+When attempting to access administrative endpoints or settings,
+
+Then access is denied, and administrative controls (blocking users, changing rights) are hidden.
