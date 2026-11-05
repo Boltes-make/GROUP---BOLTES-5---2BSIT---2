@@ -1,0 +1,119 @@
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111;
+  background: #fdfdfd;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #fdfdfd;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  padding: 20px;
+}
+
+.auth-card {
+  height: 560px;
+  padding: 38px 30px;
+  border: 2px solid #202020;
+  border-radius: 5px;
+  background: #fff;
+}
+
+.auth-card h1 {
+  margin: 0 0 33px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid #333;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.auth-card label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.auth-card input {
+  width: 100%;
+  height: 47px;
+  margin-bottom: 17px;
+  padding: 0 14px;
+  border: 2px solid #1e1e1e;
+  border-radius: 3px;
+  outline: none;
+  background: #fff;
+  color: #111;
+  font-size: 14px;
+}
+
+.auth-card input:focus {
+  box-shadow: inset 0 0 0 1px #111;
+}
+
+.primary-button,
+.cancel-button {
+  width: 100%;
+  height: 47px;
+  border: 2px solid #1e1e1e;
+  border-radius: 3px;
+  background: #fff;
+  color: #111;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.primary-button {
+  margin-top: 2px;
+}
+
+.primary-button:hover {
+  color: #fff;
+  background: #111;
+}
+
+.cancel-button {
+  margin-top: 10px;
+  border-style: dashed;
+  font-weight: 600;
+}
+
+.auth-link {
+  color: #111;
+  font-size: 13px;
+}
+
+.center-link {
+  display: block;
+  width: fit-content;
+  margin: 16px auto 0;
+}
+
+.switch-text {
+  margin: 30px 0 0;
+  text-align: center;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-card {
+    height: auto;
+    min-height: 560px;
+  }
+}

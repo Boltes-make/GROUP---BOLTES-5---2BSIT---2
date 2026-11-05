@@ -10,6 +10,15 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "name": "hope-community-auth",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HOPE Community registration and session-based authentication",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",
     "cors": "^2.8.6",
