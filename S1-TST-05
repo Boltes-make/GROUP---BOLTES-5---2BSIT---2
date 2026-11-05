@@ -1,0 +1,47 @@
+Automated Smoke Test (Login & Main Page)
+TC-SMK-01: Valid Login Authentication
+Test Scenario: Verify that a registered, approved user can successfully log in and authenticate.
+Pre-conditions: Test account is registered, approved, and active.
+Steps to Execute:
+Navigate to the Login Page URL (/login).
+Enter valid credentials (username/email and password).
+Click the "Login" button.
+Expected Result:
+The user is successfully authenticated (session cookie/JWT token stored).
+System redirects the user to the Main Dashboard page (/dashboard or /home).
+Server responds with HTTP 200 / 302 redirect.
+
+TC-SMK-02: Main Page Layout & Core Navigation Verification
+Test Scenario: Verify that key UI components and navigation elements on the Main Page render correctly upon login.
+Steps to Execute:
+Log in with an active user account.
+Wait for the Main Page to fully load.
+Verify the presence of essential UI elements:
+Navigation bar / Header (Logo, User Profile menu, Logout option).
+Sidebar navigation links.
+Main dashboard widgets / summary panels.
+Expected Result:
+All primary page components load within acceptable threshold (< 3 seconds).
+No UI rendering errors, broken visual assets, or console JavaScript errors appear.
+
+TC-SMK-03: Invalid Credentials Login Block
+Test Scenario: Verify that the system blocks login attempts with incorrect credentials.
+Steps to Execute:
+Navigate to the Login Page (/login).
+Enter an active username with an incorrect password.
+Click the "Login" button.
+Expected Result:
+Access is denied; user remains on the login page.
+An error message is displayed (e.g., "Invalid username or password").
+Server responds with HTTP 401 Unauthorized.
+
+TC-SMK-04: Session Logout Verification
+Test Scenario: Verify that logging out destroys the session and redirects to the login screen.
+Steps to Execute:
+From the Main Page, click the user profile menu.
+Click the "Logout" button.
+Attempt to navigate back to the Main Page (/dashboard) using the browser back button or direct URL access.
+Expected Result:
+User is redirected to the Login Page (/login).
+Session token/cookie is invalidated.
+Direct URL access to protected routes returns HTTP 401 / redirects to logi
