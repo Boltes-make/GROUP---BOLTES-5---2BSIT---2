@@ -144,6 +144,7 @@ document.querySelectorAll('[data-app-view]').forEach((button) => {
   button.addEventListener('click', (event) => {
     event.preventDefault();
     const view = button.dataset.appView;
+    if (view === 'users' && currentUser?.role !== 'Admin') {
     if (view === 'users' && !['Admin', 'Superadmin'].includes(currentUser?.role)) {
       showMessage(sessionMessage, 'error', 'Administrator access is required.');
       return;
@@ -306,6 +307,11 @@ userForm.addEventListener('submit', async (event) => {
   const userId = userForm.dataset.userId;
   const body = {
     fullName: formData.get('fullName').trim(),
+    email: formData.get('email').trim(),
+    role: formData.get('role')
+  };
+  if (!userId) {
+    body.password = formData.get('password');
     email: formData.get('email').trim()
   };
   if (!userId) {
@@ -459,6 +465,10 @@ logoutButton.addEventListener('click', async () => {
   logoutButton.disabled = true;
   logoutButton.textContent = 'Logging out...';
   clearMessage(sessionMessage);
+
+  try {
+    if (session?.accessToken && session?.refreshToken) {
+      await apiRequest('/api/auth/logout', {
   clearSession();
   showAuthForms();
 
@@ -469,6 +479,14 @@ logoutButton.addEventListener('click', async () => {
         accessToken: session.accessToken,
         body: { refreshToken: session.refreshToken }
       });
+    }
+    clearSession();
+    showAuthForms();
+  } catch (error) {
+    if (error.status === 401 || error.status === 403) {
+      endSession(error.message);
+    } else {
+      showMessage(sessionMessage, 'error', error.message);
     }
     showMessage(loginMessage, 'success', 'You have been logged out.');
   } catch (error) {
@@ -694,6 +712,9 @@ function showSignedIn(user) {
   document.querySelector('#settings-name').textContent = user.fullName || 'Account';
   document.querySelector('#settings-email').textContent = user.email || '';
   document.querySelector('#settings-role').textContent = user.role || 'User';
+  const isAdministrator = user.role === 'Admin';
+  document.querySelector('#users-nav-button').hidden = !isAdministrator;
+  document.querySelector('#open-users-button').hidden = !isAdministrator;
   const isAdministrator = ['Admin', 'Superadmin'].includes(user.role);
   document.querySelector('#users-nav-button').hidden = !isAdministrator;
   document.querySelector('#open-users-button').hidden = !isAdministrator;
@@ -845,6 +866,7 @@ function renderUsers() {
 
     const statusCell = document.createElement('td');
     const status = document.createElement('span');
+    status.className = `user-status${user.status === 'blocked' ? ' blocked' : ''}`;
     status.className = `user-status ${user.status || 'pending'}`;
     status.textContent = user.status || 'pending';
     statusCell.append(status);
@@ -853,6 +875,9 @@ function renderUsers() {
     const actions = document.createElement('td');
     const actionGroup = document.createElement('div');
     actionGroup.className = 'row-actions';
+    actionGroup.append(
+      createUserAction('Edit', 'edit', user),
+      createUserAction(user.status === 'blocked' ? 'Unblock' : 'Block', 'block', user, user.id === currentUser?.id)
     if (user.status === 'pending' && currentUser?.role === 'Superadmin') {
       actionGroup.append(createUserAction('Approve', 'approve', user));
     }
@@ -1163,6 +1188,12 @@ function openUserEditor(user = null) {
   document.querySelector('#user-form-label').textContent = isEditing ? 'UPDATE ACCOUNT' : 'NEW ACCOUNT';
   document.querySelector('#user-full-name').value = user?.fullName || '';
   document.querySelector('#user-email').value = user?.email || '';
+  document.querySelector('#user-role').value = user?.role || 'User';
+  document.querySelector('#user-password-field').hidden = isEditing;
+  document.querySelector('#user-password').required = !isEditing;
+  document.querySelector('#user-form-note').textContent = isEditing
+    ? 'Changing someone’s role can grant or remove administrator access.'
+    : 'Share the temporary password securely. Admin access should only be given to trusted staff.';
   document.querySelector('#user-role').value = user?.role === 'Admin' ? 'Admin' : 'User';
   document.querySelector('#user-role').disabled = user?.id === currentUser?.id;
   document.querySelector('#user-role-field').hidden = currentUser?.role !== 'Superadmin';
