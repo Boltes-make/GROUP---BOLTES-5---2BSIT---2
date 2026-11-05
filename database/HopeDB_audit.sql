@@ -1,7 +1,3 @@
--- Hope, Inc. Database 
--- Fictitious Company
--- Conceptualized by JEREMIAS C. ESPERANZA - NEU CCS
--- Information Management Course
 
 DROP TABLE IF EXISTS employee CASCADE;
 DROP TABLE IF EXISTS department CASCADE;

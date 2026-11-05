@@ -1,0 +1,65 @@
+FILE 1: .github/PULL_REQUEST_TEMPLATE.md
+
+Summary of Changes
+Briefly describe the features, fixes, or updates included in this PR.
+Related Task / Issue
+Task ID: #
+Issue Link: 
+
+Testing & Verification
+Code builds without errors.
+Unit / Integration tests pass.
+Self-reviewed the changes.
+
+Reviewers
+Assigned Scrum Master / Lead Reviewer: @
+
+FILE 2: .github/ISSUE_TEMPLATE/bug_report.md
+
+name: Bug Report
+about: Create a report to help us fix an issue
+title: '[BUG] '
+labels: bug
+assignees: ''
+
+Description
+A clear and concise description of what the bug is.
+
+Steps to Reproduce
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
+
+Expected Behavior
+A clear description of what you expected to happen.
+
+Screenshots / Logs
+If applicable, attach screenshots or error logs to help explain your problem.
+
+FILE 3: .github/ISSUE_TEMPLATE/feature_request.md
+
+name: Feature Request
+about: Suggest an idea for this project
+title: '[FEATURE] '
+labels: enhancement
+assignees: ''
+
+Feature Description
+A clear and concise description of what you want to happen.
+
+Value / User Story
+As a [user role], I want [feature] so that [benefit].
+
+Acceptance Criteria
+Requirement 1
+Requirement 2
+
+SETTINGS: Branch Protection Rules (GitHub Web UI)
+Location: Settings > Branches > Add branch protection rule
+Branch name pattern: main
+Checkboxes to enable:
+Require a pull request before merging
+Require approvals (Set to 1)
+Require status checks to pass before merging
+[✓] Do not allow bypassing the above settings

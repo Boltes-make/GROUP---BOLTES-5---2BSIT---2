@@ -43,5 +43,4 @@ async function runMigrations() {
         await client.end();
     }
 }
-
 runMigrations();
