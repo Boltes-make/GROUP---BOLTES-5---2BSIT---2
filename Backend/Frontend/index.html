@@ -139,6 +139,44 @@
       </div>
 
       <section class="app-panel" id="app-panel" hidden>
+        <header class="app-header">
+          <a class="app-name" href="#" data-app-view="dashboard">HOPE Community</a>
+          <nav class="app-nav" aria-label="Main navigation">
+            <button class="nav-button active" type="button" data-app-view="dashboard">Dashboard</button>
+            <button class="nav-button" id="users-nav-button" type="button" data-app-view="users" hidden>Users</button>
+            <button class="nav-button" type="button" data-app-view="settings">Settings</button>
+            <button class="nav-button nav-logout" id="logout-button" type="button">Logout</button>
+          </nav>
+        </header>
+        <p class="form-message app-message" id="session-message" role="status" aria-live="polite" hidden></p>
+
+        <section class="app-view" id="dashboard-view" aria-labelledby="dashboard-title">
+          <div class="page-heading">
+            <span class="section-label">COMMUNITY PORTAL</span>
+            <h1 id="dashboard-title">Welcome, <span id="session-title">member</span></h1>
+            <p id="session-email"></p>
+          </div>
+          <div class="dashboard-welcome">
+            <h2>System overview</h2>
+            <p>System overview and quick actions appear here.</p>
+          </div>
+          <div class="quick-actions" aria-label="Quick actions">
+            <div class="quick-action">Dashboard</div>
+            <div class="quick-action">Reports</div>
+          </div>
+          <button class="submit-button user-management-link" id="open-users-button" type="button" data-app-view="users" hidden>
+            Go to User Management
+          </button>
+        </section>
+
+        <section class="app-view" id="users-view" aria-labelledby="users-title" hidden>
+          <div class="page-heading management-heading">
+            <div>
+              <span class="section-label">ADMINISTRATION</span>
+              <h1 id="users-title">User Management</h1>
+            </div>
+            <button class="submit-button add-user-button" id="add-user-button" type="button">+ Add User</button>
+          </div>
         <aside class="app-sidebar">
           <a class="app-name" href="#" data-app-view="dashboard">
             <span class="brand-mark" aria-hidden="true">H</span>
@@ -259,6 +297,14 @@
               <label for="user-email">Email address</label>
               <input id="user-email" name="email" type="email" autocomplete="email" required maxlength="254">
             </div>
+            <div class="field">
+              <div id="user-role-field" hidden>
+                <label for="user-role">Role</label>
+                <select id="user-role" name="role">
+                  <option value="User">User</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </div>
             <div class="field" id="user-role-field" hidden>
               <label for="user-role">Role</label>
               <select id="user-role" name="role">
@@ -277,6 +323,9 @@
               <button class="secondary-button" id="cancel-user-button" type="button">Cancel</button>
             </div>
           </form>
+        </section>
+
+        <section class="app-view" id="settings-view" aria-labelledby="settings-title" hidden>
           </section>
 
           <section class="app-view" id="settings-view" aria-labelledby="settings-title" hidden>
@@ -289,6 +338,9 @@
             <p id="settings-email"></p>
             <p>Role: <strong id="settings-role"></strong></p>
           </div>
+        </section>
+      </section>
+
           </section>
         </div>
       </section>

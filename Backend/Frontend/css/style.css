@@ -310,6 +310,7 @@ input {
   outline-offset: 3px;
 }
 
+.app-panel {
 .demo-entry {
   margin-top: 21px;
   border-top: 1px solid var(--line);
@@ -344,6 +345,15 @@ input {
   margin-bottom: auto;
 }
 
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(37, 38, 48, 0.08);
+  border-radius: 12px;
+  padding: 14px 20px;
 .app-sidebar {
   position: sticky;
   top: 18px;
@@ -359,6 +369,19 @@ input {
 }
 
 .app-name {
+  color: var(--ink);
+  font-family: Manrope, Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -406,6 +429,10 @@ input {
 }
 
 .nav-button {
+  min-height: 38px;
+  border: 0;
+  border-radius: 7px;
+  padding: 0 12px;
   width: 100%;
   min-height: 38px;
   border: 0;
@@ -426,6 +453,9 @@ input {
 }
 
 .nav-logout {
+  color: var(--blue);
+}
+
   margin-top: auto;
   color: var(--blue);
 }
@@ -523,6 +553,9 @@ input {
   margin-top: 8px;
 }
 
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 .module-tiles {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
@@ -530,6 +563,15 @@ input {
   margin: 18px 0 24px;
 }
 
+.quick-action {
+  display: grid;
+  min-height: 76px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
 .module-tile {
   display: flex;
   min-height: 112px;
@@ -951,6 +993,20 @@ input {
     min-height: 65px;
   }
 
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .app-nav {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .nav-button {
+    padding-inline: 9px;
   .app-panel {
     grid-template-columns: 1fr;
     gap: 14px;
@@ -1029,6 +1085,15 @@ input {
   .page-footer {
     flex-direction: column;
     gap: 5px;
+  }
+
+  .quick-actions {
+    gap: 9px;
+  }
+
+  .quick-action {
+    min-height: 66px;
+    font-size: 13px;
   }
 
   .module-tiles {

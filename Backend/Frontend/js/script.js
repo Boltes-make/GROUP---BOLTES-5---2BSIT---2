@@ -140,6 +140,16 @@ document.querySelectorAll('[data-return-login]').forEach((link) => {
   });
 });
 
+document.querySelectorAll('[data-app-view]').forEach((button) => {
+  button.addEventListener('click', (event) => {
+    event.preventDefault();
+    const view = button.dataset.appView;
+    if (view === 'users' && !['Admin', 'Superadmin'].includes(currentUser?.role)) {
+      showMessage(sessionMessage, 'error', 'Administrator access is required.');
+      return;
+    }
+    setAppView(view);
+  });
 appPanel.addEventListener('click', async (event) => {
   const button = event.target.closest('[data-app-view]');
   if (button) {
@@ -150,6 +160,8 @@ appPanel.addEventListener('click', async (event) => {
 
 document.querySelector('#add-user-button').addEventListener('click', () => openUserEditor());
 document.querySelector('#cancel-user-button').addEventListener('click', closeUserEditor);
+document.querySelector('#user-search').addEventListener('input', renderUsers);
+
 document.querySelector('#cancel-rights-button').addEventListener('click', () => rightsDialog.close());
 document.querySelector('#user-search').addEventListener('input', renderUsers);
 
@@ -199,6 +211,11 @@ document.querySelector('#users-table-body').addEventListener('click', async (eve
     button.disabled = true;
     clearMessage(usersMessage);
     try {
+      await apiRequest(`/api/admin/users/${encodeURIComponent(user.id)}/approve`, {
+        method: 'PATCH',
+        accessToken: readSession()?.accessToken,
+        body: {}
+      });
       if (isDemoSession()) {
         updateDemoUser(user.id, { status: 'active' });
       } else {
@@ -226,6 +243,11 @@ document.querySelector('#users-table-body').addEventListener('click', async (eve
   button.disabled = true;
   clearMessage(usersMessage);
   try {
+    await apiRequest(`/api/admin/users/${encodeURIComponent(user.id)}/block`, {
+      method: 'PATCH',
+      accessToken: readSession()?.accessToken,
+      body: { blocked: shouldBlock }
+    });
     if (isDemoSession()) {
       updateDemoUser(user.id, { status: shouldBlock ? 'blocked' : 'active' });
     } else {
@@ -288,6 +310,27 @@ userForm.addEventListener('submit', async (event) => {
   };
   if (!userId) {
     body.password = formData.get('password');
+    if (currentUser?.role === 'Superadmin') {
+      body.role = formData.get('role');
+    }
+  }
+
+  try {
+    const result = await apiRequest(
+      userId ? `/api/admin/users/${encodeURIComponent(userId)}` : '/api/admin/users',
+      {
+        method: userId ? 'PATCH' : 'POST',
+        accessToken: readSession()?.accessToken,
+        body
+      }
+    );
+    if (userId && userId !== currentUser?.id && currentUser?.role === 'Superadmin' &&
+        formData.get('role') !== users.find((user) => user.id === userId)?.role) {
+      await apiRequest(`/api/admin/users/${encodeURIComponent(userId)}/role`, {
+        method: 'PATCH',
+        accessToken: readSession()?.accessToken,
+        body: { role: formData.get('role') }
+      });
   }
   if (currentUser?.role === 'Superadmin' && userId !== currentUser?.id) {
     body.role = formData.get('role');
@@ -610,6 +653,7 @@ async function sendApiRequest(path, { method = 'GET', body, accessToken } = {}) 
       body: body === undefined ? undefined : JSON.stringify(body)
     });
   } catch {
+    throw new Error('Cannot reach the server. Make sure the backend is running, then try again.');
     if (isLocalPreview) {
       throw new Error(`Cannot reach the backend at ${apiBaseUrl}. Start it from the Backend folder with "npm start", then open http://localhost:3000.`);
     }
@@ -650,6 +694,9 @@ function showSignedIn(user) {
   document.querySelector('#settings-name').textContent = user.fullName || 'Account';
   document.querySelector('#settings-email').textContent = user.email || '';
   document.querySelector('#settings-role').textContent = user.role || 'User';
+  const isAdministrator = ['Admin', 'Superadmin'].includes(user.role);
+  document.querySelector('#users-nav-button').hidden = !isAdministrator;
+  document.querySelector('#open-users-button').hidden = !isAdministrator;
   document.querySelector('#sidebar-name').textContent = user.fullName || user.email || 'member';
   document.querySelector('#sidebar-role').textContent = user.role || 'User';
   document.querySelector('#demo-banner').hidden = !user.isDemo;
@@ -679,6 +726,7 @@ function endSession(message) {
   showMessage(loginMessage, 'error', message);
 }
 
+function setAppView(viewName) {
 async function setAppView(viewName) {
   if (isDemoSession()) {
     if (!canOpenDemoModule(viewName)) {
@@ -722,6 +770,9 @@ function showAppView(viewName) {
   });
   clearMessage(sessionMessage);
 
+  if (viewName === 'users') {
+    loadUsers();
+  }
 }
 
 function canOpenDemoModule(viewName) {
@@ -806,6 +857,8 @@ function renderUsers() {
       actionGroup.append(createUserAction('Approve', 'approve', user));
     }
     actionGroup.append(
+      createUserAction('Edit', 'edit', user),
+      createUserAction(user.status === 'blocked' ? 'Unblock' : 'Block', 'block', user, user.id === currentUser?.id)
       ...(canManageUser(user) ? [createUserAction('Edit', 'edit', user)] : []),
       ...(canAssignRights(user) ? [createUserAction('Rights', 'rights', user)] : []),
       ...(canBlockUser(user)
@@ -1111,12 +1164,16 @@ function openUserEditor(user = null) {
   document.querySelector('#user-full-name').value = user?.fullName || '';
   document.querySelector('#user-email').value = user?.email || '';
   document.querySelector('#user-role').value = user?.role === 'Admin' ? 'Admin' : 'User';
+  document.querySelector('#user-role').disabled = user?.id === currentUser?.id;
+  document.querySelector('#user-role-field').hidden = currentUser?.role !== 'Superadmin';
   const canChangeRole = currentUser?.role === 'Superadmin' && user?.id !== currentUser?.id;
   document.querySelector('#user-role-field').hidden = !canChangeRole;
   document.querySelector('#user-password-field').hidden = isEditing;
   document.querySelector('#user-password').required = !isEditing;
   document.querySelector('#user-form-note').textContent = isEditing
     ? user?.id === currentUser?.id
+      ? 'Superadmin access is protected and cannot be changed here.'
+      : 'Only a Superadmin can designate or remove administrator access.'
       ? 'Your own administrator role cannot be changed here.'
       : currentUser?.role === 'Admin'
         ? 'Admins can edit User accounts. Use Rights to manage their module access.'
