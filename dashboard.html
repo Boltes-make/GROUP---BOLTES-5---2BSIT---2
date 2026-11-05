@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Main dashboard and user management wireframes">
+  <title>Main Page and User Management</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <main class="wireframe-page">
+    <section class="wireframe-card main-card">
+      <h1>Main Page</h1>
+
+      <header class="system-bar">
+        <strong>System Name</strong>
+        <nav aria-label="Main navigation">
+          <a href="#">Dashboard</a>
+          <a href="#user-management">Users</a>
+          <a href="#">Settings</a>
+          <a href="#">Logout</a>
+        </nav>
+      </header>
+
+      <section class="welcome-box">
+        <p>Welcome, [Username]</p>
+        <span>System overview and quick actions appear here.</span>
+      </section>
+
+      <div class="action-grid">
+        <a class="wire-button" href="#">Dashboard</a>
+        <a class="wire-button" href="#">Reports</a>
+      </div>
+
+      <a class="wire-button management-link" href="#user-management">Go to User Management</a>
+    </section>
+
+    <section class="wireframe-card management-card" id="user-management">
+      <h1>User Management</h1>
+
+      <div class="management-heading">
+        <h2>User List</h2>
+        <button type="button">+ Add User</button>
+      </div>
+
+      <label class="search-box">
+        <span class="sr-only">Search users</span>
+        <input type="search" placeholder="Search users...">
+      </label>
+
+      <div class="user-table" role="table" aria-label="User list">
+        <div class="user-table-row" role="row">
+          <strong role="columnheader">Name</strong>
+          <strong role="columnheader">Email</strong>
+          <strong role="columnheader">Role</strong>
+          <strong role="columnheader">Actions</strong>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const search = document.querySelector('.search-box input');
+    const addUser = document.querySelector('.management-heading button');
+    const table = document.querySelector('.user-table');
+    const users = [];
+
+    function renderUsers() {
+      table.innerHTML = `
+        <div class="user-table-row user-table-header" role="row">
+          <strong role="columnheader">Name</strong>
+          <strong role="columnheader">Email</strong>
+          <strong role="columnheader">Role</strong>
+          <strong role="columnheader">Actions</strong>
+        </div>`;
+      const query = search.value.trim().toLowerCase();
+      users.filter(user => `${user.name} ${user.email} ${user.role}`.toLowerCase().includes(query)).forEach((user, index) => {
+        const row = document.createElement('div');
+        row.className = 'user-table-row';
+        row.innerHTML = `<span>${user.name}</span><span>${user.email}</span><span>${user.role}</span><button type="button" data-user="${index}">Remove</button>`;
+        table.appendChild(row);
+      });
+    }
+
+    addUser.addEventListener('click', () => {
+      const name = prompt('Name:');
+      if (!name) return;
+      const email = prompt('Email:');
+      if (!email) return;
+      const role = prompt('Role:', 'User');
+      users.push({ name, email, role: role || 'User' });
+      renderUsers();
+    });
+
+    search.addEventListener('input', renderUsers);
+    table.addEventListener('click', event => {
+      if (!event.target.matches('[data-user]')) return;
+      users.splice(Number(event.target.dataset.user), 1);
+      renderUsers();
+    });
+  </script>
+</body>
+</html>
