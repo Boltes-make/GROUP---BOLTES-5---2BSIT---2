@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Main dashboard and user management wireframes">
+  <title>Main Page and User Management</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <main class="wireframe-page">
+    <section class="wireframe-card main-card">
+      <h1>Main Page</h1>
+
+      <header class="system-bar">
+        <strong>System Name</strong>
+        <nav aria-label="Main navigation">
+          <a href="#">Dashboard</a>
+          <a href="#user-management">Users</a>
+          <a href="#">Settings</a>
+          <a href="#">Logout</a>
+        </nav>
+      </header>
+
+      <section class="welcome-box">
+        <p>Welcome, [Username]</p>
+        <span>System overview and quick actions appear here.</span>
+      </section>
+
+      <div class="action-grid">
+        <a class="wire-button" href="#">Dashboard</a>
+        <a class="wire-button" href="#">Reports</a>
+      </div>
+
+      <a class="wire-button management-link" href="#user-management">Go to User Management</a>
+    </section>
+
+    <section class="wireframe-card management-card" id="user-management">
+      <h1>User Management</h1>
+
+      <div class="management-heading">
+        <h2>User List</h2>
+        <button type="button">+ Add User</button>
+      </div>
+
+      <label class="search-box">
+        <span class="sr-only">Search users</span>
+        <input type="search" placeholder="Search users...">
+      </label>
+
+      <div class="user-table" role="table" aria-label="User list">
+        <div class="user-table-row" role="row">
+          <strong role="columnheader">Name</strong>
+          <strong role="columnheader">Email</strong>
+          <strong role="columnheader">Role</strong>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
