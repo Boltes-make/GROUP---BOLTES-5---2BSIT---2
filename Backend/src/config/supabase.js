@@ -1,10 +1,12 @@
 
-const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
+const dotenv = require('dotenv');
 
-require('dotenv').config({
-    path: path.resolve(__dirname, '../../../.env')
-});
+const projectRoot = path.resolve(__dirname, '../../../');
+
+dotenv.config({ path: path.join(projectRoot, '.env.local') });
+dotenv.config({ path: path.join(projectRoot, '.env') });
 
 function createSupabaseClient() {
     const supabaseUrl = process.env.SUPABASE_URL?.trim();
@@ -14,6 +16,8 @@ function createSupabaseClient() {
         throw new Error('Supabase credentials are missing.');
     }
 
+if (!supabaseUrl || !supabaseKey) {
+    throw new Error('SUPABASE_URL and SUPABASE_ANON_KEY must be configured in the project-root .env.local or .env file.');
     return createClient(supabaseUrl, supabaseKey, {
 const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
