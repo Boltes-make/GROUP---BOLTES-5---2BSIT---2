@@ -1,0 +1,70 @@
+Test Cases & Acceptance Criteria
+Module 1: Registration
+TC-REG-01: Successful User Registration
+
+Given an unauthenticated user is on the Registration page,
+When they fill in all required fields (e.g., name, valid email, strong password) with valid information and submit,
+Then the account is created, a verification email is dispatched, and the user is redirected to the login or confirmation page.
+
+TC-REG-02: Registration with Duplicate Email
+Given an account already exists for user@example.com,
+When a new user attempts to register using user@example.com,
+Then the system blocks registration and displays an inline error indicating the email is already registered.
+
+TC-REG-03: Input Validation for Weak Password
+Given a user is on the Registration page,
+When they enter a password that does not meet security criteria (e.g., under 8 characters, missing special characters),
+Then submission is blocked and explicit error guidance is displayed under the password field.
+
+Login & Logout
+TC-LOG-01: Successful Login with Valid Credentials
+Given a registered and active user is on the Login page,
+When they enter their correct email and password and click "Log In",
+Then they are authenticated, an active session/JWT token is created, and they are redirected to their designated landing page.
+
+TC-LOG-02: Failed Login with Invalid Credentials
+Given a user is on the Login page,
+When they enter an incorrect email or password,
+Then access is denied and a generic error message (e.g., "Invalid username or password") is shown without revealing which credential was incorrect.
+
+TC-LOG-03: Login Attempt by Blocked/Deactivated Account
+Given a user account status is set to "Blocked" by an Admin or Superadmin,
+When the user enters valid credentials and submits,
+Then authentication fails and the system displays an "Account is suspended or blocked" notification.
+
+TC-LOG-04: Successful User Logout
+Given an authenticated user is active in the system,
+When they click the "Log Out" button,
+Then their active session/token is invalidated, and they are redirected to the main public landing page.
+
+TC-LOG-05: Back Navigation After Logout
+Given a user has successfully logged out,
+When they click the browser's "Back" button,
+Then they cannot access protected pages,and the browser redirects them or prompts for re-authentication.
+
+Set & Reset Password
+TC-PWD-01: Request Password Reset Link
+Given a registered user is on the "Forgot Password" page,
+When they enter their registered email address and click "Send Link",
+Then a unique, time-sensitive password reset link/token is generated and sent to their email.
+
+TC-PWD-02: Successful Password Reset with Valid Token
+Given a user receives a valid reset link and navigates to the Reset Password page,
+When they enter a new password meeting policy requirements and confirm,
+Then the password is updated in the database, the reset token is invalidated, and a success confirmation is displayed.
+
+TC-PWD-03: Attempt Password Reset with Expired Token
+Given a password reset token's expiration window (e.g., 15 minutes) has elapsed,
+When the user clicks the link or submits a new password using the expired token,
+Then the system rejects the operation and displays an error stating "Reset link has expired. Please request a new one."
+
+TC-PWD-04: Attempt Password Reset with Reused / Already Consumed Token
+Given a user has already successfully reset their password using token TOKEN_123,
+When the user attempts to reuse TOKEN_123 via browser history or link re-entry,
+Then the system rejects the token as invalid/consumed and prevents any password modification.
+
+TC-PWD-05: Enforce Password History Rule (Same Password Attempt)
+Given a user is resetting their password using a valid token,
+When they enter their current/old password as the new password,
+
+Then the system blocks the update and displays an error message (e.g., "New password cannot be the same as your previous password").
