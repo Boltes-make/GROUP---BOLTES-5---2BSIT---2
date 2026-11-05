@@ -40,6 +40,21 @@
             </button>
             <p class="card-note">Register for an account, then sign in with the password you created.</p>
             <a class="text-link" id="forgot-password-link" href="#password-reset">Forgot password?</a>
+            <p class="card-note">Register first. A Superadmin must approve your account before you can sign in.</p>
+            <a class="text-link" id="forgot-password-link" href="#password-reset">Forgot password?</a>
+            <div class="demo-entry">
+              <span class="demo-divider">OR TRY A SAFE DEMO</span>
+              <div class="field">
+                <label for="demo-role">Choose a demo role</label>
+                <select id="demo-role" name="demoRole">
+                  <option value="Superadmin">Superadmin</option>
+                  <option value="Admin">Admin</option>
+                  <option value="User">User</option>
+                </select>
+              </div>
+              <button class="secondary-button" id="demo-login-button" type="button">Enter demo mode</button>
+              <p class="card-note">Demo actions only change sample data in this browser. They do not affect real accounts.</p>
+            </div>
           </form>
         </section>
 
@@ -77,6 +92,7 @@
               <span class="button-arrow" aria-hidden="true">→</span>
             </button>
             <p class="card-note">New accounts are ready to use after registration.</p>
+            <p class="card-note">Your account will be available after Superadmin approval.</p>
           </form>
         </section>
 
@@ -164,6 +180,91 @@
             </div>
             <button class="submit-button add-user-button" id="add-user-button" type="button">+ Add User</button>
           </div>
+        <aside class="app-sidebar">
+          <a class="app-name" href="#" data-app-view="dashboard">
+            <span class="brand-mark" aria-hidden="true">H</span>
+            <span>HOPE<span class="brand-light"> COMMUNITY</span></span>
+          </a>
+          <div class="sidebar-account">
+            <span class="section-label">SIGNED IN AS</span>
+            <strong id="sidebar-name">member</strong>
+            <span class="role-badge" id="sidebar-role">User</span>
+          </div>
+          <nav class="app-nav" aria-label="Main navigation">
+            <button class="nav-button active" type="button" data-app-view="dashboard">Dashboard</button>
+            <button class="nav-button module-nav" type="button" data-app-view="customer" hidden>Customer</button>
+            <button class="nav-button module-nav" type="button" data-app-view="product" hidden>Product</button>
+            <button class="nav-button module-nav" type="button" data-app-view="hr" hidden>Human Resources</button>
+            <button class="nav-button module-nav" type="button" data-app-view="sales" hidden>Sales</button>
+            <button class="nav-button module-nav" type="button" data-app-view="reports" hidden>Reports</button>
+            <button class="nav-button" id="users-nav-button" type="button" data-app-view="users" hidden>User Management</button>
+            <button class="nav-button" type="button" data-app-view="settings">Settings</button>
+          </nav>
+          <button class="nav-button nav-logout" id="logout-button" type="button">Log out</button>
+        </aside>
+
+        <div class="app-content">
+          <div class="demo-banner" id="demo-banner" hidden>
+            <div>
+              <strong>Demo mode</strong>
+              <span>Only sample data is being changed. Real accounts are not affected.</span>
+            </div>
+            <button class="secondary-button" id="reset-demo-button" type="button">Reset demo data</button>
+          </div>
+          <p class="form-message app-message" id="session-message" role="status" aria-live="polite" hidden></p>
+
+          <section class="app-view" id="dashboard-view" aria-labelledby="dashboard-title">
+            <div class="page-heading">
+              <span class="section-label">COMMUNITY PORTAL</span>
+              <h1 id="dashboard-title">Welcome, <span id="session-title">member</span></h1>
+              <p id="session-email"></p>
+            </div>
+            <div class="dashboard-welcome">
+              <h2>Your workspace</h2>
+              <p>Choose an available module to continue.</p>
+            </div>
+            <div class="module-tiles" id="module-tiles" aria-label="Available modules"></div>
+          </section>
+
+          <section class="app-view" id="customer-view" aria-labelledby="customer-title" hidden>
+            <div class="page-heading">
+              <span class="section-label">COMMUNITY PORTAL</span>
+              <h1 id="customer-title">Customer</h1>
+            </div>
+            <div class="dashboard-welcome">
+              <h2>Customer workspace</h2>
+              <p>This module is ready for customer workflows; data operations are not connected yet.</p>
+            </div>
+          </section>
+
+          <section class="app-view" id="product-view" aria-labelledby="product-title" hidden>
+            <div class="page-heading"><span class="section-label">COMMUNITY PORTAL</span><h1 id="product-title">Product</h1></div>
+            <div class="dashboard-welcome"><h2>Product workspace</h2><p>This module is ready for product workflows; data operations are not connected yet.</p></div>
+          </section>
+
+          <section class="app-view" id="hr-view" aria-labelledby="hr-title" hidden>
+            <div class="page-heading"><span class="section-label">COMMUNITY PORTAL</span><h1 id="hr-title">Human Resources</h1></div>
+            <div class="dashboard-welcome"><h2>Human Resources workspace</h2><p>This module is ready for HR workflows; data operations are not connected yet.</p></div>
+          </section>
+
+          <section class="app-view" id="sales-view" aria-labelledby="sales-title" hidden>
+            <div class="page-heading"><span class="section-label">COMMUNITY PORTAL</span><h1 id="sales-title">Sales</h1></div>
+            <div class="dashboard-welcome"><h2>Sales workspace</h2><p>This module is ready for sales workflows; data operations are not connected yet.</p></div>
+          </section>
+
+          <section class="app-view" id="reports-view" aria-labelledby="reports-title" hidden>
+            <div class="page-heading"><span class="section-label">COMMUNITY PORTAL</span><h1 id="reports-title">Reports</h1></div>
+            <div class="dashboard-welcome"><h2>Reports workspace</h2><p>This module is ready for reports workflows; data operations are not connected yet.</p></div>
+          </section>
+
+          <section class="app-view" id="users-view" aria-labelledby="users-title" hidden>
+            <div class="page-heading management-heading">
+              <div>
+                <span class="section-label">ADMINISTRATION</span>
+                <h1 id="users-title">User Management</h1>
+              </div>
+              <button class="submit-button add-user-button" id="add-user-button" type="button">+ Add User</button>
+            </div>
           <div class="user-list-heading">
             <h2>User List</h2>
             <span id="user-count" aria-live="polite"></span>
@@ -202,6 +303,16 @@
             <div class="field">
               <label for="user-role">Role</label>
               <select id="user-role" name="role" required>
+              <div id="user-role-field" hidden>
+                <label for="user-role">Role</label>
+                <select id="user-role" name="role">
+                  <option value="User">User</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </div>
+            <div class="field" id="user-role-field" hidden>
+              <label for="user-role">Role</label>
+              <select id="user-role" name="role">
                 <option value="User">User</option>
                 <option value="Admin">Admin</option>
               </select>
@@ -220,6 +331,9 @@
         </section>
 
         <section class="app-view" id="settings-view" aria-labelledby="settings-title" hidden>
+          </section>
+
+          <section class="app-view" id="settings-view" aria-labelledby="settings-title" hidden>
           <div class="page-heading">
             <span class="section-label">ACCOUNT</span>
             <h1 id="settings-title">Settings</h1>
@@ -231,6 +345,40 @@
           </div>
         </section>
       </section>
+
+          </section>
+        </div>
+      </section>
+
+      <dialog class="rights-dialog" id="rights-dialog" aria-labelledby="rights-dialog-title">
+        <form id="rights-form">
+          <div class="card-heading">
+            <span class="section-label">ACCESS CONTROL</span>
+            <h2 id="rights-dialog-title">Module rights</h2>
+            <p class="card-note" id="rights-user-label"></p>
+          </div>
+          <div class="rights-toolbar">
+            <span>Choose module access and per-action rights.</span>
+            <div>
+              <button class="secondary-button" id="rights-all-button" type="button">All</button>
+              <button class="secondary-button" id="rights-none-button" type="button">None</button>
+            </div>
+          </div>
+          <div class="rights-table-scroll">
+            <table class="rights-table">
+              <thead>
+                <tr><th scope="col">Module</th><th scope="col">View</th><th scope="col">Create</th><th scope="col">Edit</th><th scope="col">Delete</th></tr>
+              </thead>
+              <tbody id="rights-table-body"></tbody>
+            </table>
+          </div>
+          <p class="form-message" id="rights-message" role="status" aria-live="polite" hidden></p>
+          <div class="editor-actions">
+            <button class="submit-button" id="save-rights-button" type="submit"><span>Save rights</span></button>
+            <button class="secondary-button" id="cancel-rights-button" type="button">Cancel</button>
+          </div>
+        </form>
+      </dialog>
 
       <footer class="page-footer">
         <span>© 2026 HOPE Community</span>
