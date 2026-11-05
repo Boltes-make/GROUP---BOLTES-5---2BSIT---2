@@ -212,6 +212,19 @@ test('new Admin designation is audited before the account receives the Admin rol
     assert.equal(auditLog[0].status, 'succeeded');
 });
 
+test('role changes are not applied when the required audit insert fails', async () => {
+    auditLog.length = 0;
+    auditUnavailable = true;
+    const result = await request('/api/admin/users/user/role', 'super', {
+        method: 'PATCH',
+        body: { role: 'Admin' }
+    });
+    auditUnavailable = false;
+    assert.equal(result.status, 503);
+    assert.match(result.body.message, /audit log/i);
+    assert.equal(users.get('user').app_metadata.role, 'User');
+});
+
 test('blocking another Superadmin leaves one active and self-blocking is rejected', async () => {
     assert.equal((await request('/api/admin/users/super/block', 'super', {
         method: 'PATCH',

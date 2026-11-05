@@ -610,7 +610,10 @@ async function sendApiRequest(path, { method = 'GET', body, accessToken } = {}) 
       body: body === undefined ? undefined : JSON.stringify(body)
     });
   } catch {
-    throw new Error('Cannot reach the server. Make sure the backend is running, then try again.');
+    if (isLocalPreview) {
+      throw new Error(`Cannot reach the backend at ${apiBaseUrl}. Start it from the Backend folder with "npm start", then open http://localhost:3000.`);
+    }
+    throw new Error('Cannot reach the server. Please try again later.');
   }
 
   const contentType = response.headers.get('content-type') || '';

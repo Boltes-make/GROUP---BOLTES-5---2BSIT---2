@@ -7,10 +7,49 @@ const createSupabaseAdminClient = require('./config/supabaseAdmin');
 const app = express();
 const PORT = Number(process.env.APP_PORT) || 3000;
 const frontendPath = path.resolve(__dirname, '../Frontend');
+const permissionModules = ['customer', 'product', 'hr', 'sales', 'reports'];
+const permissionActions = ['view', 'create', 'edit', 'delete'];
+
+function emptyPermissions() {
+    return Object.fromEntries(permissionModules.map((module) => [
+        module,
+        Object.fromEntries(permissionActions.map((action) => [action, false]))
+    ]));
+}
+
+function normalizePermissions(value) {
+    const permissions = emptyPermissions();
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+        return permissions;
+    }
+
+    for (const module of permissionModules) {
+        const modulePermissions = value[module];
+        if (!modulePermissions || typeof modulePermissions !== 'object' || Array.isArray(modulePermissions)) {
+            continue;
+        }
+        for (const action of permissionActions) {
+            permissions[module][action] = modulePermissions[action] === true;
+        }
+    }
+    return permissions;
+}
+
+function validPermissions(value) {
+    return value && typeof value === 'object' && !Array.isArray(value) &&
+        permissionModules.every((module) =>
+            value[module] && typeof value[module] === 'object' && !Array.isArray(value[module]) &&
+            permissionActions.every((action) => typeof value[module][action] === 'boolean')
+        );
+}
 
 app.use(cors());
 app.use(express.json({ limit: '16kb' }));
 app.use(express.static(frontendPath, { index: false }));
+
+app.get('/api/health', (req, res) => {
+    res.json({ success: true, service: 'HOPE ERP Backend' });
+});
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(frontendPath, 'index.html'));
@@ -47,6 +86,12 @@ function publicUser(user) {
         email: user.email,
         fullName: user.user_metadata?.full_name || '',
         role,
+        permissions: role === 'User'
+            ? normalizePermissions(user.app_metadata?.permissions)
+            : Object.fromEntries(permissionModules.map((module) => [
+                module,
+                Object.fromEntries(permissionActions.map((action) => [action, true]))
+            ])),
         status: user.app_metadata?.blocked === true
             ? 'blocked'
             : isPending(user) ? 'pending' : 'active'
@@ -110,6 +155,41 @@ function requireRole(requiredRole) {
 
 const requireAdmin = requireRole('Admin');
 const requireSuperAdmin = requireRole('Superadmin');
+
+async function writeAuditEntry(adminClient, actor, target, eventType, beforeState, afterState) {
+    const { data, error } = await adminClient
+        .from('audit_log')
+        .insert({
+            actor_user_id: actor.id,
+            actor_email: actor.email || '',
+            target_user_id: target.id,
+            target_email: target.email || '',
+            event_type: eventType,
+            before_state: beforeState,
+            after_state: afterState,
+            status: 'pending'
+        })
+        .select('id')
+        .single();
+
+    if (error || !data?.id) {
+        console.error('AUDIT LOG WRITE ERROR:', error?.message || 'Audit entry was not returned.');
+        return { error: error || new Error('Audit entry was not returned.') };
+    }
+    return { id: data.id };
+}
+
+async function updateAuditStatus(adminClient, auditId, status) {
+    const { error } = await adminClient
+        .from('audit_log')
+        .update({ status })
+        .eq('id', auditId);
+    if (error) {
+        console.error('AUDIT LOG STATUS ERROR:', error.message);
+        return error;
+    }
+    return null;
+}
 
 function sessionResponse(session) {
     return {
@@ -226,6 +306,78 @@ app.get('/api/admin/users', requireAdmin, async (req, res) => {
     }
 });
 
+app.get('/api/modules/:module', async (req, res) => {
+    const accessToken = getBearerToken(req);
+    if (!accessToken) {
+        return res.status(401).json({ success: false, message: 'Please sign in to continue.' });
+    }
+    const module = req.params.module;
+    if (!['dashboard', 'users', 'settings', ...permissionModules].includes(module)) {
+        return res.status(404).json({ success: false, message: 'Module not found.' });
+    }
+
+    try {
+        const client = createSupabaseClient();
+        const { data, error } = await client.auth.getUser(accessToken);
+        if (error || !data.user) {
+            return res.status(401).json({ success: false, message: 'Your session has expired. Please sign in again.' });
+        }
+        if (isBlocked(data.user) || isPending(data.user)) {
+            return res.status(403).json({
+                success: false,
+                message: isBlocked(data.user)
+                    ? 'Your account has been blocked. Contact an administrator.'
+                    : 'Your account is pending approval.'
+            });
+        }
+        if (module === 'users' && !isAdmin(data.user)) {
+            return res.status(403).json({ success: false, message: 'Administrator access is required.' });
+        }
+        if (permissionModules.includes(module) &&
+            !normalizePermissions(data.user.app_metadata?.permissions)[module].view) {
+            return res.status(403).json({ success: false, message: 'You do not have permission to view this module.' });
+        }
+        return res.json({ success: true, module });
+    } catch (error) {
+        console.error('MODULE ACCESS ERROR:', error.message);
+        return res.status(503).json({ success: false, message: 'Could not verify module access. Please try again.' });
+    }
+});
+
+app.post('/api/modules/:module/authorize/:action', async (req, res) => {
+    const accessToken = getBearerToken(req);
+    if (!accessToken) {
+        return res.status(401).json({ success: false, message: 'Please sign in to continue.' });
+    }
+    const { module, action } = req.params;
+    if (!permissionModules.includes(module) || !permissionActions.includes(action)) {
+        return res.status(404).json({ success: false, message: 'Module action not found.' });
+    }
+
+    try {
+        const client = createSupabaseClient();
+        const { data, error } = await client.auth.getUser(accessToken);
+        if (error || !data.user) {
+            return res.status(401).json({ success: false, message: 'Your session has expired. Please sign in again.' });
+        }
+        if (isBlocked(data.user) || isPending(data.user)) {
+            return res.status(403).json({
+                success: false,
+                message: isBlocked(data.user)
+                    ? 'Your account has been blocked. Contact an administrator.'
+                    : 'Your account is pending approval.'
+            });
+        }
+        if (!normalizePermissions(data.user.app_metadata?.permissions)[module][action]) {
+            return res.status(403).json({ success: false, message: `You do not have permission to ${action} this module.` });
+        }
+        return res.json({ success: true, module, action });
+    } catch (error) {
+        console.error('MODULE ACTION AUTHORIZATION ERROR:', error.message);
+        return res.status(503).json({ success: false, message: 'Could not verify module permissions. Please try again.' });
+    }
+});
+
 app.patch('/api/admin/users/:id/approve', requireSuperAdmin, async (req, res) => {
     try {
         const adminClient = createSupabaseAdminClient();
@@ -290,7 +442,7 @@ app.post('/api/admin/users', requireAdmin, async (req, res) => {
             password,
             email_confirm: true,
             user_metadata: { full_name: fullName },
-            app_metadata: { status: 'approved', role, blocked: false }
+            app_metadata: { status: 'approved', role: 'User', blocked: false, permissions: emptyPermissions() }
         });
 
         if (error) {
@@ -299,6 +451,40 @@ app.post('/api/admin/users', requireAdmin, async (req, res) => {
                 success: false,
                 message: error.message || 'Could not add this user.'
             });
+        }
+
+        if (role === 'Admin') {
+            const target = data.user;
+            const beforeState = { role: publicUser(target).role };
+            const afterState = { role: 'Admin' };
+            const audit = await writeAuditEntry(adminClient, req.adminUser, target, 'role_changed', beforeState, afterState);
+            if (audit.error) {
+                return res.status(503).json({
+                    success: false,
+                    message: 'Could not write the required audit log. The account was created without administrator privileges.'
+                });
+            }
+
+            const { data: updated, error: roleError } = await adminClient.auth.admin.updateUserById(target.id, {
+                app_metadata: { ...target.app_metadata, role: 'Admin' }
+            });
+            if (roleError || !updated.user) {
+                await updateAuditStatus(adminClient, audit.id, 'failed');
+                console.error('DESIGNATE ADMIN ERROR:', roleError?.message || 'Updated user was not returned.');
+                return res.status(503).json({
+                    success: false,
+                    message: 'Could not assign the administrator role. The account remains a regular user.'
+                });
+            }
+
+            const auditStatusError = await updateAuditStatus(adminClient, audit.id, 'succeeded');
+            if (auditStatusError) {
+                return res.status(503).json({
+                    success: false,
+                    message: 'Administrator role was assigned, but the audit status could not be updated. Check the audit log.'
+                });
+            }
+            return res.status(201).json({ success: true, user: publicUser(updated.user) });
         }
 
         return res.status(201).json({ success: true, user: publicUser(data.user) });
@@ -358,6 +544,67 @@ app.patch('/api/admin/users/:id', requireAdmin, async (req, res) => {
     }
 });
 
+app.patch('/api/admin/users/:id/rights', requireAdmin, async (req, res) => {
+    if (!validPermissions(req.body?.permissions)) {
+        return res.status(400).json({ success: false, message: 'Provide a complete and valid permissions matrix.' });
+    }
+
+    try {
+        const adminClient = createSupabaseAdminClient();
+        const { data: existing, error: findError } = await adminClient.auth.admin.getUserById(req.params.id);
+        if (findError || !existing.user) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
+        if (isAdmin(existing.user)) {
+            return res.status(403).json({ success: false, message: 'Module rights cannot be assigned to administrator accounts.' });
+        }
+
+        const beforeState = normalizePermissions(existing.user.app_metadata?.permissions);
+        const afterState = normalizePermissions(req.body.permissions);
+        const audit = await writeAuditEntry(
+            adminClient,
+            req.adminUser,
+            existing.user,
+            'module_rights_changed',
+            beforeState,
+            afterState
+        );
+        if (audit.error) {
+            return res.status(503).json({
+                success: false,
+                message: 'Could not write the required audit log. No changes were saved.'
+            });
+        }
+
+        const { data, error } = await adminClient.auth.admin.updateUserById(req.params.id, {
+            app_metadata: { ...existing.user.app_metadata, permissions: afterState }
+        });
+        if (error || !data.user) {
+            await updateAuditStatus(adminClient, audit.id, 'failed');
+            console.error('UPDATE USER RIGHTS ERROR:', error?.message || 'Updated user was not returned.');
+            return res.status(400).json({
+                success: false,
+                message: error?.message || 'Could not update module rights.'
+            });
+        }
+
+        const auditStatusError = await updateAuditStatus(adminClient, audit.id, 'succeeded');
+        if (auditStatusError) {
+            return res.status(503).json({
+                success: false,
+                message: 'Module rights were saved, but the audit status could not be updated. Check the audit log.'
+            });
+        }
+        return res.json({ success: true, user: publicUser(data.user) });
+    } catch (error) {
+        console.error('UPDATE USER RIGHTS SERVER ERROR:', error.message);
+        return res.status(503).json({
+            success: false,
+            message: 'Could not update module rights. Please try again.'
+        });
+    }
+});
+
 app.patch('/api/admin/users/:id/role', requireSuperAdmin, async (req, res) => {
     const role = typeof req.body?.role === 'string' ? req.body.role : '';
     if (!['Admin', 'User'].includes(role)) {
@@ -380,12 +627,47 @@ app.patch('/api/admin/users/:id/role', requireSuperAdmin, async (req, res) => {
             return res.status(400).json({ success: false, message: 'This configured administrator cannot be changed here.' });
         }
 
+        const currentRole = publicUser(existing.user).role;
+        if (currentRole === role) {
+            return res.json({ success: true, user: publicUser(existing.user) });
+        }
+        const audit = await writeAuditEntry(
+            adminClient,
+            req.adminUser,
+            existing.user,
+            'role_changed',
+            { role: currentRole },
+            { role }
+        );
+        if (audit.error) {
+            return res.status(503).json({
+                success: false,
+                message: 'Could not write the required audit log. No changes were saved.'
+            });
+        }
+
         const { data, error } = await adminClient.auth.admin.updateUserById(req.params.id, {
             app_metadata: { ...existing.user.app_metadata, role }
         });
-        if (error) {
-            console.error('DESIGNATE ADMIN ERROR:', { message: error.message, status: error.status, code: error.code });
-            return res.status(400).json({ success: false, message: error.message || 'Could not change this user role.' });
+        if (error || !data.user) {
+            await updateAuditStatus(adminClient, audit.id, 'failed');
+            console.error('DESIGNATE ADMIN ERROR:', {
+                message: error?.message || 'Updated user was not returned.',
+                status: error?.status,
+                code: error?.code
+            });
+            return res.status(400).json({
+                success: false,
+                message: error?.message || 'Could not change this user role.'
+            });
+        }
+
+        const auditStatusError = await updateAuditStatus(adminClient, audit.id, 'succeeded');
+        if (auditStatusError) {
+            return res.status(503).json({
+                success: false,
+                message: 'User role was changed, but the audit status could not be updated. Check the audit log.'
+            });
         }
 
         return res.json({ success: true, user: publicUser(data.user) });
@@ -724,6 +1006,10 @@ app.use((error, req, res, next) => {
     return res.status(500).json({ success: false, message: 'Unexpected server error.' });
 });
 
-app.listen(PORT, () => {
-    console.log(`HOPE ERP Backend running on port ${PORT}`);
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`HOPE ERP Backend running on port ${PORT}`);
+    });
+}
+
+module.exports = { app };
