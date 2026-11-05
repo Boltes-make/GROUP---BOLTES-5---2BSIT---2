@@ -1,0 +1,54 @@
+User Management Test Cases
+
+User Provisioning & Administration
+TC-UM-01: Add New User (Admin / Superadmin)
+Given an Admin or Superadmin is on the User Management dashboard,
+When they fill in user details (name, email, role) and submit the "Add User" form,
+Then the new user account is created, default status is set, and an activation/welcome email is dispatched.
+
+TC-UM-02: Edit User Profile Information
+Given an authorized Admin or Superadmin accesses a target user's profile settings,
+When they update user fields (e.g., full name, contact info, department) and save changes,
+Then the profile updates successfully and changes are reflected immediately.
+
+TC-UM-03: Approve Pending User Account
+Given a new user account is created with status "Pending Approval",
+When an Admin or Superadmin clicks "Approve",
+Then the account status transitions to "Active" and the user receives a confirmation notification allowing them to log in.
+
+Status & Role Changes
+TC-UM-04: Block / Deactivate User Account
+Given an active user account exists in the system,
+When an authorized Admin or Superadmin clicks "Block Account",
+Then the account status changes to "Blocked", active sessions for that user are terminated, and subsequent login attempts are denied.
+
+TC-UM-05: Unblock / Reactivate User Account
+Given a user account is in "Blocked" status,
+When an Admin or Superadmin clicks "Unblock Account",
+Then the account status updates to "Active" and login permissions are restored.
+
+TC-UM-06: Designate User as Admin
+Given a standard User account exists,
+When a Superadmin or authorized Admin changes the user's role to "Admin" and saves,
+Then the account permissions update immediately, granting access to Admin-level management features upon their next action/login.
+
+Role Restrictions & System Guardrails
+TC-UM-07: Hierarchy Protection – Admin Cannot See Superadmin Accounts
+Given a user with the "Admin" role is logged in and views the User List,
+When the page renders or user searches execute,
+Then Superadmin accounts are hidden completely from the table and search results.
+
+TC-UM-08: Hierarchy Protection – Admin Cannot Edit or Block Superadmin
+Given an Admin attempts to directly access a Superadmin profile via deep link or API request,
+When the action is initiated,
+Then access is denied (403 Forbidden), and no edit, block, or delete actions are permitted.
+
+TC-UM-09: Last Superadmin Guardrail (Role Modification)
+Given there is only one active "Superadmin" in the entire system,
+When an attempt is made to change this user's role to "Admin" or "User",
+Then the operation is blocked, and an error message is displayed: "Cannot change role: System requires at least one active Superadmin."
+
+TC-UM-10: Last Superadmin Guardrail (Account Blocking / Deletion)
+Given there is only one active "Superadmin" in the system,
+When an attempt is made to block or delete this account,
+Then the operation is blocked, and an error message is displayed: "Cannot block/delete the sole remaining Superadmin account."
