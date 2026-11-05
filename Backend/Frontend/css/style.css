@@ -76,6 +76,14 @@ input {
   font-weight: 600;
 }
 
+.auth-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 20px;
+}
+
 .nav-button:focus-visible,
 .row-action:focus-visible,
 .user-search:focus-visible {

@@ -5,6 +5,7 @@ console.log('WORKING DIRECTORY:', process.cwd());
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const supabase = require('./config/supabase');
 const createSupabaseClient = require('./config/supabase');
 const createSupabaseAdminClient = require('./config/supabaseAdmin');
 
@@ -307,6 +308,10 @@ app.post('/api/register', async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'We could not create your account right now. Please try again later.'
+        });
+    }
+});
+
             message: 'Your account request was received and is pending Superadmin approval.'
         });
     } catch (error) {
@@ -1087,6 +1092,7 @@ app.get('/api/test-db', async (req, res) => {
     try {
         console.log('TEST-DB ROUTE WAS CALLED');
 
+        const { data, error } = await supabase
         const { data, error } = await createSupabaseClient()
             .from('employees')
             .select('*')
