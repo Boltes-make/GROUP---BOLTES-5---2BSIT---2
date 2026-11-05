@@ -1,0 +1,74 @@
+User Management
+TC-UM-01: Add New User
+Test Scenario: Verify that an authorized user (Admin/Superadmin) can successfully add a new user.
+Steps to Execute:
+Log in as an Admin or Superadmin.
+Navigate to the User Management page.
+Click the "Add New User" button.
+Fill in all required fields (Name, Email, Role) with valid details.
+Click "Save" or "Submit".
+Expected Result: The new user profile is created successfully and appears in the user list with an "Active" status.
+
+TC-UM-02: Edit Existing User Details
+Test Scenario: Verify that an existing user's details can be updated.
+Steps to Execute:
+Navigate to the User Management list.
+Select an existing user profile and click "Edit".
+Modify the user information (e.g., Name, Phone Number, or Role).
+Click "Save Changes".
+Expected Result: The user's details are updated successfully, and a notification message confirms: "User updated successfully."
+
+TC-UM-03: Block Active User
+Test Scenario: Verify that an Admin or Superadmin can block/deactivate an active user account.
+Steps to Execute:
+Select a user account with an "Active" status.
+Click the "Block" or "Deactivate" button.
+Confirm the action in the prompt/dialog box.
+Expected Result: The user's status changes from "Active" to "Blocked/Inactive". The user is immediately prevented from logging into the system.
+
+TC-UM-04: Unblock Blocked User
+Test Scenario: Verify that a previously blocked user account can be reactivated.
+Steps to Execute:
+Navigate to the User Management list.
+Filter or locate a user marked as "Blocked" or "Inactive".
+Click the "Unblock" or "Reactivate" button.
+Confirm the action.
+Expected Result: The user's status reverts to "Active", and the user can log in to the system again.
+
+TC-UM-05: Approve Pending User Registration
+Test Scenario: Verify that an Admin can approve newly registered user accounts.
+Steps to Execute:
+Navigate to the "Pending Approvals" tab or list.
+Select a user account waiting for approval.
+Click the "Approve" button.
+Expected Result: The account status becomes "Active", and an approval email/notification is sent to the user.
+
+TC-UM-06: Designate User as Admin
+Test Scenario: Verify that a regular user's role can be updated to Admin.
+Steps to Execute:
+Select a regular user account from the user list.
+Click "Edit" or "Change Role".
+Select "Admin" from the role dropdown options.
+Save the changes.
+Expected Result: The user's role updates to Admin, and appropriate administrative privileges are granted.
+
+TC-UM-07: Admin Cannot View or Edit Superadmin Profile (Role Access Security)
+Test Scenario: Verify role-based authorization restricting Admins from viewing or modifying Superadmin accounts.
+Steps to Execute:
+Log in using an Admin account.
+Navigate to the User Management list.
+Search for a Superadmin user profile.
+Expected Result:
+The Superadmin account is hidden from the list, OR
+If displayed, all action buttons (Edit, Delete, View, Change Role) for the Superadmin profile are disabled/hidden.
+
+TC-UM-08: Last Superadmin Guard (Deletion Guard)
+Test Scenario: Verify that the system prevents deleting, demoting, or blocking the sole remaining Superadmin.
+Steps to Execute:
+Log in as a Superadmin.
+Ensure there is only one active Superadmin account in the system.
+Attempt to delete, demote (change role), or block this last Superadmin account.
+Expected Result:
+The operation is blocked and an error message appears (e.g., "Action prohibited: Cannot delete, demote, or block the last remaining Superadmin.").
+
+The Superadmin account retains its status and role.
