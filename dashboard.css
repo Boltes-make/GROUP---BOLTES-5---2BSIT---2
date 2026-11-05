@@ -13,6 +13,18 @@ body {
   background: #fdfdfd;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .wireframe-page {
   min-height: 100vh;
   display: grid;
@@ -56,9 +68,10 @@ body {
   gap: 13px;
 }
 
-.system-bar span {
+.system-bar a {
   color: #111;
   font-size: 13px;
+  text-decoration: none;
 }
 
 .welcome-box {
@@ -92,10 +105,19 @@ body {
   font-weight: 700;
 }
 
+.wire-button:hover,
+.management-heading button:hover {
+  color: #fff;
+  background: #111;
+}
+
 .management-link {
   width: 100%;
   margin-top: 32px;
   height: 48px;
+  border: 0;
+  background: #2468d8;
+  color: #fff;
   font-size: 14px;
   font-weight: 400;
 }
@@ -115,15 +137,23 @@ body {
   color: #2167d4;
 }
 
-.management-heading .add-user {
+.management-heading button {
   height: 34px;
   min-width: 95px;
   border: 2px solid #111;
+  border-radius: 0;
   background: #fff;
   font-size: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  cursor: pointer;
+}
+
+.management-heading button {
+  height: 25px;
+  min-width: 95px;
+  border: 0;
+  border-radius: 4px;
+  background: #2468d8;
+  color: #fff;
 }
 
 .search-box {
@@ -131,29 +161,43 @@ body {
   margin-top: 20px;
 }
 
-.search-box {
+.search-box input {
   width: 100%;
   height: 36px;
-  border: 2px solid #111;
+  border: 1px solid #d3d3d3;
   padding: 0 12px;
+  outline: none;
   background: #fff;
   font-size: 13px;
-  display: flex;
-  align-items: center;
 }
 
 .user-table {
   margin-top: 14px;
-  height: 38px;
-  border: 2px solid #111;
+  height: auto;
+  border: 1px solid #d3d3d3;
 }
 
 .user-table-row {
-  height: 100%;
+  min-height: 38px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   align-items: center;
   padding-left: 11px;
+}
+
+.user-table-row:not(:last-child) {
+  border-bottom: 1px solid #ddd;
+}
+
+.user-table-header {
+  background: #edf4ff;
+}
+
+.user-table-row button {
+  border: 0;
+  background: transparent;
+  color: #2468d8;
+  cursor: pointer;
 }
 
 .user-table-row strong {

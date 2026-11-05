@@ -3,107 +3,192 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Login, registration, and password reset forms">
   <title>Account Forms</title>
-  <link rel="stylesheet" href="auth.css">
+  <style>
+    :root {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #111;
+      background: #fdfdfd;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #fdfdfd;
+    }
+
+    .auth-page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+      padding: 20px;
+    }
+
+    .auth-card {
+      height: 560px;
+      padding: 38px 30px;
+      border: 2px solid #202020;
+      border-radius: 5px;
+      background: #fff;
+    }
+
+    .auth-card h1 {
+      margin: 0 0 33px;
+      padding-bottom: 11px;
+      border-bottom: 1px solid #333;
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .field {
+      margin-bottom: 17px;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .field-box,
+    .action-button {
+      width: 100%;
+      height: 47px;
+      border: 1px solid #d7d7d7;
+      border-radius: 3px;
+      background: #fff;
+      color: #111;
+    }
+
+    .field-box {
+      padding: 0 14px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .field-box:focus {
+      border-color: #2367d1;
+      box-shadow: 0 0 0 1px #2367d1;
+    }
+
+    .action-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      border: 0;
+      border-radius: 4px;
+      background: #2468d8;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .cancel-button {
+      margin-top: 10px;
+      border: 2px solid #111;
+      background: #fff;
+      color: #111;
+      font-weight: 600;
+    }
+
+    .auth-link {
+      border: 0;
+      background: transparent;
+      color: #2468d8;
+      font-size: 13px;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .center-link {
+      width: fit-content;
+      margin: 16px auto 0;
+      text-align: center;
+    }
+
+    .switch-text {
+      margin: 30px 0 0;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+      .auth-page {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-card {
+        height: auto;
+        min-height: 560px;
+      }
+    }
+  </style>
 </head>
 <body>
   <main class="auth-page">
     <section class="auth-card" aria-labelledby="login-title">
       <h1 id="login-title">Login</h1>
-      <form id="login-form">
-        <div class="field">
-          <label class="field-label" for="login-email">Email Address</label>
-          <input class="field-box" id="login-email" type="email" placeholder="Enter email" required>
-        </div>
-        <div class="field">
-          <label class="field-label" for="login-password">Password</label>
-          <input class="field-box" id="login-password" type="password" placeholder="Enter password" required>
-        </div>
-        <button class="action-button primary-button" type="submit">Sign In</button>
+      <form class="field">
+        <span class="field-label">Email Address</span>
+        <input class="field-box" type="email" placeholder="Enter email" aria-label="Email Address">
       </form>
-      <a class="auth-link center-link" href="#reset-password" data-focus="reset-email">Forgot password?</a>
-      <p class="switch-text">Don't have an account? <a class="auth-link" href="#register" data-focus="register-name">Register</a></p>
+      <form class="field">
+        <span class="field-label">Password</span>
+        <input class="field-box" type="password" placeholder="Enter password" aria-label="Password">
+      </form>
+      <button class="action-button" type="button" onclick="alert('Signed in')">Sign In</button>
+      <button class="auth-link center-link" type="button" onclick="location.hash='reset-password'">Forgot password?</button>
+      <p class="switch-text">Don't have an account? <button class="auth-link" type="button" onclick="location.hash='register'">Register</button></p>
     </section>
 
     <section class="auth-card" id="register" aria-labelledby="register-title">
       <h1 id="register-title">Register</h1>
-      <form id="register-form">
-        <div class="field">
-          <label class="field-label" for="register-name">Full Name</label>
-          <input class="field-box" id="register-name" type="text" placeholder="Enter full name" required>
-        </div>
-        <div class="field">
-          <label class="field-label" for="register-email">Email Address</label>
-          <input class="field-box" id="register-email" type="email" placeholder="Enter email" required>
-        </div>
-        <div class="field">
-          <label class="field-label" for="register-password">Password</label>
-          <input class="field-box" id="register-password" type="password" placeholder="Create password" required>
-        </div>
-        <div class="field">
-          <label class="field-label" for="register-confirm">Confirm Password</label>
-          <input class="field-box" id="register-confirm" type="password" placeholder="Repeat password" required>
-        </div>
-        <button class="action-button primary-button" type="submit">Create Account</button>
-      </form>
-      <p class="switch-text">Already have an account? <a class="auth-link" href="#login-title">Login</a></p>
+      <div class="field">
+        <span class="field-label">Full Name</span>
+        <input class="field-box" placeholder="Enter full name">
+      </div>
+      <div class="field">
+        <span class="field-label">Email Address</span>
+        <input class="field-box" type="email" placeholder="Enter email">
+      </div>
+      <div class="field">
+        <span class="field-label">Password</span>
+        <input class="field-box" type="password" placeholder="Create password">
+      </div>
+      <div class="field">
+        <span class="field-label">Confirm Password</span>
+        <input class="field-box" type="password" placeholder="Repeat password">
+      </div>
+      <button class="action-button" type="button" onclick="alert('Account created')">Create Account</button>
+      <p class="switch-text">Already have an account? <button class="auth-link" type="button" onclick="document.querySelector('#login-title').scrollIntoView()">Login</button></p>
     </section>
 
     <section class="auth-card" id="reset-password" aria-labelledby="reset-title">
       <h1 id="reset-title">Set / Reset Password</h1>
-      <form id="reset-form">
-        <div class="field">
-          <label class="field-label" for="reset-email">Email Address</label>
-          <input class="field-box" id="reset-email" type="email" placeholder="Enter your email" required>
-        </div>
-        <div class="field">
-          <label class="field-label" for="reset-password-input">New Password</label>
-          <input class="field-box" id="reset-password-input" type="password" placeholder="Enter new password" required>
-        </div>
-        <div class="field">
-          <label class="field-label" for="reset-confirm">Confirm New Password</label>
-          <input class="field-box" id="reset-confirm" type="password" placeholder="Repeat new password" required>
-        </div>
-        <button class="action-button primary-button" type="submit">Update Password</button>
-        <button class="action-button cancel-button" type="reset">Cancel</button>
-      </form>
-      <a class="auth-link center-link" href="#login-title">Back to Login</a>
+      <div class="field">
+        <span class="field-label">Email Address</span>
+        <input class="field-box" type="email" placeholder="Enter your email">
+      </div>
+      <div class="field">
+        <span class="field-label">New Password</span>
+        <input class="field-box" type="password" placeholder="Enter new password">
+      </div>
+      <div class="field">
+        <span class="field-label">Confirm New Password</span>
+        <input class="field-box" type="password" placeholder="Repeat new password">
+      </div>
+      <button class="action-button" type="button" onclick="alert('Password updated')">Update Password</button>
+      <button class="action-button cancel-button" type="button">Cancel</button>
+      <button class="auth-link center-link" type="button" onclick="document.querySelector('#login-title').scrollIntoView()">Back to Login</button>
     </section>
   </main>
-  <script>
-    document.querySelectorAll("[data-focus]").forEach(link => {
-      link.addEventListener("click", () => {
-        setTimeout(() => document.getElementById(link.dataset.focus)?.focus(), 0);
-      });
-    });
-
-    document.getElementById("login-form").addEventListener("submit", event => {
-      event.preventDefault();
-      window.location.href = "dashboard.html";
-    });
-
-    document.getElementById("register-form").addEventListener("submit", event => {
-      event.preventDefault();
-      if (document.getElementById("register-password").value !== document.getElementById("register-confirm").value) {
-        document.getElementById("register-confirm").setCustomValidity("Passwords do not match.");
-        document.getElementById("register-confirm").reportValidity();
-        return;
-      }
-      window.location.href = "dashboard.html";
-    });
-    document.getElementById("register-confirm").addEventListener("input", event => event.target.setCustomValidity(""));
-
-    document.getElementById("reset-form").addEventListener("submit", event => {
-      event.preventDefault();
-      if (document.getElementById("reset-password-input").value !== document.getElementById("reset-confirm").value) {
-        document.getElementById("reset-confirm").setCustomValidity("Passwords do not match.");
-        document.getElementById("reset-confirm").reportValidity();
-        return;
-      }
-      window.location.hash = "login-title";
-    });
-    document.getElementById("reset-confirm").addEventListener("input", event => event.target.setCustomValidity(""));
-  </script>
 </body>
 </html>

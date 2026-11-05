@@ -5,197 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Main dashboard and user management wireframes">
   <title>Main Page and User Management</title>
-  <style>
-    :root {
-      font-family: Arial, Helvetica, sans-serif;
-      color: #111;
-      background: #fdfdfd;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: #fdfdfd;
-    }
-
-    .wireframe-page {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 28px;
-      padding: 12px;
-    }
-
-    .wireframe-card {
-      height: 440px;
-      border: 2px solid #272727;
-      border-radius: 5px;
-      padding: 38px 32px 28px;
-      background: #fff;
-    }
-
-    .wireframe-card h1 {
-      margin: 0 32px 24px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #555;
-      text-align: center;
-      font-size: 18px;
-      line-height: 1.2;
-    }
-
-    .system-bar {
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border: 2px solid #111;
-      padding: 0 15px;
-    }
-
-    .system-bar strong {
-      font-size: 18px;
-    }
-
-    .system-bar nav {
-      display: flex;
-      gap: 13px;
-    }
-
-    .system-bar span {
-      color: #111;
-      font-size: 13px;
-    }
-
-    .welcome-box {
-      margin-top: 18px;
-      height: 78px;
-      border: 2px solid #111;
-      padding: 13px 16px;
-      font-size: 13px;
-    }
-
-    .welcome-box p {
-      margin: 0 0 16px;
-    }
-
-    .action-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin-top: 18px;
-    }
-
-    .wire-button {
-      height: 58px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid #111;
-      color: #111;
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .management-link {
-      width: 100%;
-      margin-top: 32px;
-      height: 48px;
-      font-size: 14px;
-      font-weight: 400;
-    }
-
-    .management-heading {
-      height: 38px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 30px;
-    }
-
-    .management-heading h2 {
-      margin: 0;
-      font-size: 13px;
-      font-weight: 500;
-      color: #2167d4;
-    }
-
-    .management-heading .add-user {
-      height: 34px;
-      min-width: 95px;
-      border: 2px solid #111;
-      background: #fff;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .search-box {
-      width: 100%;
-      height: 36px;
-      border: 2px solid #111;
-      padding: 0 12px;
-      margin-top: 20px;
-      background: #fff;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-    }
-
-    .user-table {
-      margin-top: 14px;
-      height: 38px;
-      border: 2px solid #111;
-    }
-
-    .user-table-row {
-      height: 100%;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      align-items: center;
-      padding-left: 11px;
-    }
-
-    .user-table-row strong {
-      font-size: 13px;
-    }
-
-    @media (max-width: 900px) {
-      .wireframe-page {
-        grid-template-columns: 1fr;
-      }
-
-      .wireframe-card {
-        height: auto;
-        min-height: 440px;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .wireframe-page {
-        padding: 8px;
-      }
-
-      .wireframe-card {
-        padding: 28px 18px;
-      }
-
-      .system-bar {
-        height: auto;
-        align-items: flex-start;
-        gap: 12px;
-        flex-direction: column;
-        padding: 12px;
-      }
-
-      .system-bar nav {
-        flex-wrap: wrap;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
   <main class="wireframe-page">
@@ -204,11 +14,11 @@
 
       <header class="system-bar">
         <strong>System Name</strong>
-        <nav>
-          <span>Dashboard</span>
-          <span>Users</span>
-          <span>Settings</span>
-          <span>Logout</span>
+        <nav aria-label="Main navigation">
+          <a href="#">Dashboard</a>
+          <a href="#user-management">Users</a>
+          <a href="#">Settings</a>
+          <a href="#">Logout</a>
         </nav>
       </header>
 
@@ -218,11 +28,11 @@
       </section>
 
       <div class="action-grid">
-        <div class="wire-button">Dashboard</div>
-        <div class="wire-button">Reports</div>
+        <a class="wire-button" href="#">Dashboard</a>
+        <a class="wire-button" href="#">Reports</a>
       </div>
 
-      <div class="wire-button management-link">Go to User Management</div>
+      <a class="wire-button management-link" href="#user-management">Go to User Management</a>
     </section>
 
     <section class="wireframe-card management-card" id="user-management">
@@ -230,19 +40,63 @@
 
       <div class="management-heading">
         <h2>User List</h2>
-        <div class="add-user">+ Add User</div>
+        <button type="button">+ Add User</button>
       </div>
 
-      <div class="search-box">Search users...</div>
+      <label class="search-box">
+        <span class="sr-only">Search users</span>
+        <input type="search" placeholder="Search users...">
+      </label>
 
       <div class="user-table" role="table" aria-label="User list">
         <div class="user-table-row" role="row">
           <strong role="columnheader">Name</strong>
           <strong role="columnheader">Email</strong>
           <strong role="columnheader">Role</strong>
+          <strong role="columnheader">Actions</strong>
         </div>
       </div>
     </section>
   </main>
+  <script>
+    const search = document.querySelector('.search-box input');
+    const addUser = document.querySelector('.management-heading button');
+    const table = document.querySelector('.user-table');
+    const users = [];
+
+    function renderUsers() {
+      table.innerHTML = `
+        <div class="user-table-row user-table-header" role="row">
+          <strong role="columnheader">Name</strong>
+          <strong role="columnheader">Email</strong>
+          <strong role="columnheader">Role</strong>
+          <strong role="columnheader">Actions</strong>
+        </div>`;
+      const query = search.value.trim().toLowerCase();
+      users.filter(user => `${user.name} ${user.email} ${user.role}`.toLowerCase().includes(query)).forEach((user, index) => {
+        const row = document.createElement('div');
+        row.className = 'user-table-row';
+        row.innerHTML = `<span>${user.name}</span><span>${user.email}</span><span>${user.role}</span><button type="button" data-user="${index}">Remove</button>`;
+        table.appendChild(row);
+      });
+    }
+
+    addUser.addEventListener('click', () => {
+      const name = prompt('Name:');
+      if (!name) return;
+      const email = prompt('Email:');
+      if (!email) return;
+      const role = prompt('Role:', 'User');
+      users.push({ name, email, role: role || 'User' });
+      renderUsers();
+    });
+
+    search.addEventListener('input', renderUsers);
+    table.addEventListener('click', event => {
+      if (!event.target.matches('[data-user]')) return;
+      users.splice(Number(event.target.dataset.user), 1);
+      renderUsers();
+    });
+  </script>
 </body>
 </html>
