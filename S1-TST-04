@@ -1,0 +1,52 @@
+Permission Matrix & Access Control (User Management)
+TC-UM-09: Menu Navigation Visibility Matrix
+Test Scenario: Verify that menu navigation items are correctly displayed or hidden based on user roles (Superadmin, Admin, User).
+Pre-conditions: Test accounts are registered, approved, and active.
+Steps to Execute:
+Log in sequentially using each test account:
+Test Account A: Approved Regular User
+Test Account B: Approved Admin
+Test Account C: Approved Superadmin
+Inspect the sidebar / top navigation menu.
+Expected Result:
+Regular User: Sees standard user menus (e.g., Dashboard, Profile, Own Tasks). User Management / Admin settings menu is completely hidden.
+Admin: Sees standard user menus + User Management menu (Add/Edit Users, Approve Users). Superadmin System/Audit logs menu is hidden.
+Superadmin: Sees all menu items, including full User Management, System Settings, Audit Logs, and Admin Roles Configuration.
+
+TC-UM-10: Action Button Visibility and Enablement (UI Level)
+Test Scenario: Verify action buttons (Add, Edit, Block/Unblock, Approve, Assign Admin) reflect role privileges on the UI.
+Steps to Execute:
+Log in as Regular User and attempt to navigate directly to the User List page via URL.
+Log in as Admin and view the User List (containing User, Admin, and Superadmin entries).
+Log in as Superadmin and view the User List.
+Expected Result:
+Regular User: Cannot access the UI page (redirected to 403 / Access Denied page).
+Admin:
+"Add User", "Edit User", "Block/Unblock User", and "Approve" buttons are visible and active for Regular User rows.
+Edit/Block/Delete action buttons are hidden or disabled for Superadmin rows.
+Superadmin: All action buttons (Add, Edit, Block/Unblock, Approve, Designate Admin/Superadmin) are visible and active across all accounts.
+
+TC-UM-11: Server-Side API Endpoint Protection (Bypass Test)
+Test Scenario: Verify that backend API endpoints enforce role-based access control, blocking direct API calls (e.g., via Postman or browser DevTools) regardless of UI controls.
+Steps to Execute:
+Log in as Regular User, retrieve the active session token/cookie.
+Send a direct HTTP request to Admin/Superadmin endpoints:
+POST /api/users/add
+PUT /api/users/{id}/block
+PUT /api/users/{id}/role (Designate Admin)
+Log in as Admin and send a direct HTTP request to Superadmin endpoints:
+PUT /api/superadmin/{superadmin_id}/edit
+DELETE /api/superadmin/{superadmin_id}
+Expected Result:
+Server responds with HTTP 403 Forbidden (or HTTP 401 Unauthorized) for unauthorized requests.
+No database modifications occur on unauthorized API calls.
+
+TC-UM-12: Unapproved / Pending Account Access Block
+Test Scenario: Verify that registered accounts awaiting approval are denied access to both UI and Server endpoints.
+Pre-conditions: A newly registered account with status "Pending Approval".
+Steps to Execute:
+Attempt to log in using the Pending User account credentials.
+Attempt to make authenticated API requests using any generated token/session.
+Expected Result:
+Login fails with message: "Account pending approval. Please contact an administrator."
+All API calls return HTTP 403 Forbidden.
