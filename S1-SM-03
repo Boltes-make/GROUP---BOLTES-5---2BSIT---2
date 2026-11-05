@@ -1,0 +1,51 @@
+SECTION 1: TEAM WORKING AGREEMENT
+
+Core Communication & Collaboration
+Communication channels: Primary team communication takes place in designated project channels; urgent blockers are flagged directly to the Scrum Master.
+Response times: Team members respond to project queries within core working hours.
+Daily Syncs & Standups: Regular status updates are posted covering what was completed, what is next, and any blockers.
+Respect & Openness: Constructive feedback is encouraged, and team decisions are made collaboratively.
+
+Version Control & Workflow Standards
+Branching strategy: Feature branches are created from main following standard naming conventions.
+Commit guidelines: Commits must be clear, concise, and linked to specific task IDs.
+Pull Request policy: Direct commits to protected branches are strictly prohibited. Every PR requires at least one approval before merging.
+
+SECTION 2: DEFINITION OF DONE (DoD)
+
+Code & Feature Completion
+Functional requirements: All user story acceptance criteria are fully met and verified.
+Code quality: Code is clean, documented where necessary, and follows established team coding standards.
+Self-review: Developers complete a thorough self-review before opening a Pull Request.
+
+Testing & Integration
+Testing: Unit, integration, or manual test cases pass successfully without breaking existing features.
+Build status: Application builds cleanly without console errors or critical warnings.
+PR Approval: The PR is reviewed, approved by designated reviewers, and merged into the target branch.
+
+Documentation & Task Tracking
+Task Status: The corresponding task on the project board and task plan spreadsheet is updated to Merged or Done with the PR link attached.
+
+SECTION 3: ROLE GUIDE & RESPONSIBILITIES
+
+Scrum Master (SM)
+Facilitates sprint ceremonies, maintains the project board, removes team blockers, and enforces repository protection and governance rules.
+
+Developer (DEV)
+Implements feature requirements, writes clean and maintainable code, creates pull requests adhering to PR templates, and resolves review feedback.
+
+Database Administrator (DBA)
+Designs and maintains the database schema, writes seed scripts, creates required views/triggers, and ensures query performance and integrity.
+
+Tester / QA (TST)
+Drafts test plans and test cases, performs feature and regression testing, logs structured bug reports, and verifies fixes before final release.
+
+UI/UX Designer (UIX)
+Creates color palettes, typography guidelines, wireframes, and high-fidelity mockups, ensuring the built interface matches design specs.
+
+SECTION 4: DEFINITION OF DONE (SCRUM MASTER CHECKLIST)
+
+Team Working Agreement is documented and agreed upon by all team members.
+Definition of Done criteria are finalized and established across all project roles.
+Role Guide detailing specific responsibilities for SM, DEV, DBA, TST, and UIX is published.
+Task status for S1-SM-03 is updated to Merged / Done in the task plan spreadsheet with the documentation PR link attached.

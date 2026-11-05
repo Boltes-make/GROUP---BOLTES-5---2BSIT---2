@@ -1,0 +1,44 @@
+SECTION 1: MID-SPRINT CHECK NOTES
+
+Sprint Progress Summary
+Goal: Establish core repository standards, authentication foundation, initial database schema, and design guidelines.
+Overall Health: On track across all key project roles (Scrum Master, Developer, DB Admin, Tester, UI/UX Designer).
+Completed Deliverables: Repository governance (branch protection, PR/Issue templates), initial working agreements, and sprint board backlog creation.
+
+Role Progress Overview
+Scrum Master: Repository setup completed; board and roadmap mapped; Definition of Done established.
+Developer: Core authentication and initial project structure setup in progress.
+DB Admin: Initial database schema designed; seed scripts and audit logging trigger preparation underway.
+Tester: Test strategy and initial test case scenarios drafted for login and user management workflows.
+UI/UX Designer: Color palette, typography standards, and initial wireframes for core screens created.
+
+SECTION 2: IMPEDIMENT LOG & RISKS
+
+Impediment 1: Environment & Tooling Setup
+Description: Delay in setting up local database environments across all team developer machines.
+Impact: Medium impact on local integration testing for database-dependent features.
+Owner: Developer / DB Admin
+Mitigation Action: Provided standardized Docker setup scripts and shared configuration guidelines to streamline local setups.
+Status: Resolved
+
+Impediment 2: Dependency Mapping for Auth Rights
+Description: Clarification needed on specific role-based permissions matrix before coding endpoint guards.
+Impact: Low impact on current Sprint 1 tasks, but critical for Sprint 2 user management tasks.
+Owner: Scrum Master / UI/UX Designer
+Mitigation Action: Scheduled an asynchronous review session to finalize the permission matrix mapping sheet.
+Status: In Progress
+
+SECTION 3: ACTION ITEMS FOR SECOND HALF OF SPRINT
+
+Finalize and review initial PRs for database scripts and authentication endpoints.
+
+Complete manual and initial test scenario execution for Sprint 1 acceptance criteria.
+
+Prepare initial demo builds for the upcoming Sprint 1 Review and Retrospective.
+
+SECTION 4: DEFINITION OF DONE (SCRUM MASTER CHECKLIST)
+
+Mid-sprint check notes compiled summarizing team progress and health.
+Impediment log updated with identified blockers, mitigation steps, and current statuses.
+Action items defined for the remaining duration of Sprint 1.
+Task status for S1-SM-04 updated to Merged / Done in the task plan spreadsheet with the documentation PR link attached.

@@ -1,0 +1,36 @@
+Bug Reports & Fix Verification
+TC-BUG-01: Regression Testing on Resolved Bugs
+Test Scenario: Verify that previously reported bugs are fixed and do not regress in the current build.
+Pre-conditions: Access to resolved bug ticket IDs and steps to reproduce from the bug tracking system (e.g., Jira/GitHub Issues).
+Steps to Execute:
+Retrieve the steps to reproduce for resolved User Management bug tickets.
+Execute the exact reproduction steps on the current build using approved test accounts.
+Verify both UI behavior and backend response.
+Expected Result:
+The reported defect no longer occurs.
+System behaves according to functional specifications.
+No secondary issues or unintended side effects are introduced in related modules.
+
+TC-BUG-02: Bug Reporting & Artifact Gathering Verification
+Test Scenario: Ensure all necessary details and evidence are collected to file a complete bug report when a test case fails.
+Steps to Execute:
+When a test step fails during execution, document the following:
+Title: Concise summary of the defect.
+Environment: Build/commit ID, browser version, user role tested.
+Pre-conditions: Account status and initial system state.
+Steps to Reproduce: Numbered step-by-step instructions.
+Expected vs. Actual Result: Explicit statement of expected behavior vs. observed behavior.
+Evidence: Console error logs, network response payloads (HTTP status codes), and screenshots.
+Log the bug report into the issue tracking tool.
+Expected Result:
+Bug report contains complete details enabling developers to reproduce and diagnose the issue without needing additional clarification.
+
+TC-BUG-03: Re-testing and Closing Verified Fixes
+Test Scenario: Validate fixed bugs deployed to the staging/test environment before closing the issue ticket.
+Steps to Execute:
+Identify tickets marked as "Ready for QA" or "Resolved".
+Execute verification test cases across affected user roles (Superadmin, Admin, User).
+Perform boundary testing around the fixed area to ensure stability.
+Expected Result:
+If the issue is resolved: Mark the bug ticket as "VERIFIED" / "CLOSED" with verification notes.
+If the issue persists: Re-open the ticket with updated logs and screenshots explaining why the fix failed.
