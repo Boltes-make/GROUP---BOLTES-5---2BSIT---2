@@ -1,3 +1,20 @@
+
+const { createClient } = require('@supabase/supabase-js');
+const path = require('path');
+
+require('dotenv').config({
+    path: path.resolve(__dirname, '../../../.env')
+});
+
+function createSupabaseClient() {
+    const supabaseUrl = process.env.SUPABASE_URL?.trim();
+    const supabaseKey = process.env.SUPABASE_ANON_KEY?.trim();
+
+    if (!supabaseUrl || !supabaseKey) {
+        throw new Error('Supabase credentials are missing.');
+    }
+
+    return createClient(supabaseUrl, supabaseKey, {
 const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
 
@@ -41,6 +58,7 @@ function createSupabaseClient() {
     });
 }
 
+module.exports = createSupabaseClient;
 module.exports = {
     createSupabaseClient,
     getSupabaseConfig

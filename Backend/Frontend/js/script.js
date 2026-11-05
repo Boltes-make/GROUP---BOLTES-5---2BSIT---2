@@ -1,4 +1,17 @@
 const authGrid = document.querySelector('#auth-grid');
+const sessionPanel = document.querySelector('#session-panel');
+const loginForm = document.querySelector('#login-form');
+const registerForm = document.querySelector('#register-form');
+const loginMessage = document.querySelector('#login-message');
+const registerMessage = document.querySelector('#form-message');
+const sessionMessage = document.querySelector('#session-message');
+const loginButton = document.querySelector('#login-button');
+const registerButton = document.querySelector('#submit-button');
+const logoutButton = document.querySelector('#logout-button');
+const storageKey = 'hope-community-session';
+const isLocalPreview = window.location.protocol === 'file:' ||
+  ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const apiBaseUrl = isLocalPreview ? 'http://localhost:3000' : window.location.origin;
 const appPanel = document.querySelector('#app-panel');
 const loginForm = document.querySelector('#login-form');
 const registerForm = document.querySelector('#register-form');
@@ -480,6 +493,12 @@ logoutButton.addEventListener('click', async () => {
         body: { refreshToken: session.refreshToken }
       });
     }
+    showAuthForms();
+  } catch (error) {
+    showAuthForms();
+    showMessage(loginMessage, 'error', error.message);
+  } finally {
+    clearSession();
     clearSession();
     showAuthForms();
   } catch (error) {
@@ -532,6 +551,34 @@ async function restoreSession() {
     });
     showSignedIn(result.user);
   } catch (error) {
+    if (error.status !== 401 || !session.refreshToken) {
+      clearSession();
+      if (error.status !== 401 && error.status !== 403) {
+        saveSession(session);
+      }
+      showAuthForms();
+      showMessage(loginMessage, 'error', error.message);
+      return;
+    }
+
+    try {
+      const refreshed = await apiRequest('/api/auth/refresh', {
+        method: 'POST',
+        body: { refreshToken: session.refreshToken }
+      });
+      saveSession(refreshed.session);
+      showSignedIn(refreshed.user);
+    } catch (refreshError) {
+      if (refreshError.status === 401 || refreshError.status === 403) {
+        clearSession();
+      }
+      showAuthForms();
+      showMessage(loginMessage, 'error', refreshError.message);
+    }
+  }
+}
+
+async function apiRequest(path, { method = 'GET', body, accessToken } = {}) {
     if (error.status === 401 && session.refreshToken) {
       try {
         const refreshed = await refreshStoredSession();
@@ -704,6 +751,9 @@ async function sendApiRequest(path, { method = 'GET', body, accessToken } = {}) 
 
 function showSignedIn(user) {
   authGrid.hidden = true;
+  sessionPanel.hidden = false;
+  document.querySelector('#session-title').textContent = `Welcome, ${user.fullName || user.email || 'member'}`;
+  document.querySelector('#session-email').textContent = user.email || '';
   appPanel.hidden = false;
   document.querySelector('.page-shell').classList.add('signed-in');
   currentUser = user;
@@ -732,6 +782,11 @@ function showSignedIn(user) {
 }
 
 function showAuthForms() {
+  sessionPanel.hidden = true;
+  authGrid.hidden = false;
+}
+
+function saveSession(session) {
   appPanel.hidden = true;
   authGrid.hidden = false;
   document.querySelector('.page-shell').classList.remove('signed-in');

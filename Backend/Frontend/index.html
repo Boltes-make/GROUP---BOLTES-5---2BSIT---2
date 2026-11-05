@@ -16,6 +16,7 @@
       </a>
 
       <div class="auth-grid" id="auth-grid">
+        <section class="auth-card" aria-labelledby="login-title">
         <section class="auth-card login-card" aria-labelledby="login-title">
           <div class="card-heading">
             <span class="section-label">WELCOME BACK</span>
@@ -38,6 +39,7 @@
               <span>Sign in</span>
               <span class="button-arrow" aria-hidden="true">→</span>
             </button>
+            <p class="card-note">Sign in after your account has been approved.</p>
             <p class="card-note">Register for an account, then sign in with the password you created.</p>
             <a class="text-link" id="forgot-password-link" href="#password-reset">Forgot password?</a>
             <p class="card-note">Register first. A Superadmin must approve your account before you can sign in.</p>
@@ -91,6 +93,7 @@
               <span>Create account</span>
               <span class="button-arrow" aria-hidden="true">→</span>
             </button>
+            <p class="card-note">New accounts start pending approval.</p>
             <p class="card-note">New accounts are ready to use after registration.</p>
             <p class="card-note">Your account will be available after Superadmin approval.</p>
           </form>
@@ -140,6 +143,16 @@
           </form>
         </section>
       </div>
+
+      <section class="auth-card session-card" id="session-panel" aria-live="polite" hidden>
+        <div class="session-copy">
+          <span class="section-label">SIGNED IN</span>
+          <h1 id="session-title">Welcome</h1>
+          <p id="session-email"></p>
+        </div>
+        <button class="secondary-button logout-button" id="logout-button" type="button">Log out</button>
+        <p class="form-message" id="session-message" role="status" aria-live="polite" hidden></p>
+      </section>
 
       <section class="app-panel" id="app-panel" hidden>
         <header class="app-header">
